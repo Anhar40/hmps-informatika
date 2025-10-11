@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Anggota | HMPS Informatika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        @media (min-width: 768px) {
+            #sidebar {
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+        }
+        .bg-white, .dark:bg-gray-800, .shadow-lg, .border-t-4 {
+            transition: all 0.3s ease-in-out;
+        }
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .toast-container {
+            right: 1rem;
+            bottom: 1rem;
+            z-index: 1000;
+        }
+        .toast {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:sticky top-0 h-full z-50">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HMPS Admin</h1>
+        </div>
+        <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
+            <div>
+            <a href="/admin/dashboard.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-home mr-3 w-5"></i> Dashboard
+            </a>
+            <a href="/admin/manajemen-kegiatan.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+            </a>
+            <a href="/admin/kelola-galery.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+            </a>
+            <a href="/admin/pengaturan-akun.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan
+            </a>
+            <a href="/admin/manajemen-anggota.html" class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700 font-semibold">
+                <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+            </a>
+            </div>
+             <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button id="theme-toggle-sidebar" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150 w-full text-left mt-4">
+                    <i id="theme-icon-sidebar" class="fas fa-sun mr-3 w-5"></i> <span id="theme-text-sidebar">Mode Terang</span>
+                </button>
+                 <!-- TOMBOL LOGOUT BARU -->
+                <button id="logout-btn"
+                    class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
+                    <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+        
+        <header class="mb-6 flex justify-between items-center border-b pb-4 border-gray-200 dark:border-gray-700">
+            <h2 class="text-3xl font-semibold">Manajemen Anggota</h2>
+            <div class="flex items-center space-x-4">
+                <button id="menu-button" class="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition" onclick="toggleSidebar()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="space-y-8">
+            
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4 text-primary dark:text-indigo-400 border-b pb-2 border-gray-100 dark:border-gray-700"><i class="fas fa-user-plus mr-2"></i> Tambah Anggota Baru</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Lengkapi data anggota untuk ditambahkan ke daftar.</p>
+
+                <form id="add-member-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
+                            <input type="text" id="nama" name="nama" required 
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                        </div>
+                        <div>
+                            <label for="nim" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIM / Nomor Induk</label>
+                            <input type="text" id="nim" name="nim" required 
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                            <input type="email" id="email" name="email" required 
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                        </div>
+                        <div>
+                            <label for="telepon" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Telepon</label>
+                            <input type="tel" id="telepon" name="telepon" required 
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <div>
+                            <label for="jabatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jabatan / Divisi</label>
+                            <input type="text" id="jabatan" name="jabatan" required 
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                        </div>
+                        <div>
+                            <label for="angkatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tahun Angkatan</label>
+                            <input type="number" id="angkatan" name="angkatan" required 
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="bg-primary hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 flex items-center">
+                            <i class="fas fa-save mr-2"></i> Simpan Anggota
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4 text-accent dark:text-emerald-400 border-b pb-2 border-gray-100 dark:border-gray-700"><i class="fas fa-list-alt mr-2"></i> Daftar Anggota Aktif</h3>
+
+                <div class="mb-4 relative">
+                    <input type="text" id="member-search" placeholder="Cari anggota (Nama, NIM, Email, Jabatan)..." 
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">NIM</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No. HP</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jabatan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-list" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            </tbody>
+                    </table>
+                    <div id="no-results" class="hidden text-center py-4 text-gray-500 dark:text-gray-400">
+                        Tidak ada anggota yang ditemukan.
+                    </div>
+                </div>
+
+                <div id="pagination-controls" class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <span id="page-info" class="text-sm text-gray-600 dark:text-gray-400"></span>
+                    <div class="flex space-x-2" id="page-buttons">
+                        </div>
+                </div>
+
+            </div>
+            
+        </div>
+        
+    </main>
+
+    <div id="edit-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 pointer-events-none z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg m-4 transform scale-95 transition-all duration-300">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h4 class="text-xl font-bold text-primary dark:text-indigo-400">Edit Data Anggota</h4>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="edit-member-form" class="p-6 space-y-4">
+                <input type="hidden" id="edit-id" name="id">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
+                    <input type="text" id="edit-nama" name="nama" required 
+                        class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIM</label>
+                        <input type="text" id="edit-nim" name="nim" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Angkatan</label>
+                        <input type="number" id="edit-angkatan" name="angkatan" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                    <input type="email" id="edit-email" name="email" required 
+                        class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Telepon</label>
+                        <input type="tel" id="edit-telepon" name="telepon" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jabatan</label>
+                        <input type="text" id="edit-jabatan" name="jabatan" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="button" onclick="closeEditModal()" class="mr-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 py-2 px-4 rounded-lg transition duration-200">Batal</button>
+                    <button type="submit" class="bg-primary hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 flex items-center">
+                        <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 pointer-events-none z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-sm m-4 transform scale-95 transition-all duration-300">
+            <div class="p-6">
+                <div class="flex items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/50">
+                        <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                    </div>
+                    <div class="mt-0 ml-4 text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" id="confirm-title">Konfirmasi Hapus</h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-400" id="confirm-body">Apakah Anda yakin ingin menghapus data anggota ini?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 flex justify-end rounded-b-xl">
+                <button id="confirm-cancel" onclick="closeConfirmModal()" type="button" class="w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto sm:text-sm">
+                    Batal
+                </button>
+                <button id="confirm-ok" type="button" class="ml-3 w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:w-auto sm:text-sm">
+                    Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed toast-container space-y-2 max-w-xs w-full">
+        </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000'; 
+        const API_URL = `${BASE_URL}/api/anggota`;
+
+        // --- GLOBAL STATE ---
+        let ALL_MEMBERS_DATA = []; // Menyimpan semua data anggota yang sudah difilter/diambil
+        let CURRENT_PAGE = 1;
+        const MEMBERS_PER_PAGE = 10;
+        let SEARCH_QUERY = ''; // Menyimpan query pencarian terakhir
+
+        // --- ELEMEN DOM ---
+        const memberListEl = document.getElementById('member-list');
+        const searchInput = document.getElementById('member-search');
+        const noResultsEl = document.getElementById('no-results');
+        const addMemberForm = document.getElementById('add-member-form');
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-member-form');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmOkBtn = document.getElementById('confirm-ok');
+        const confirmTitle = document.getElementById('confirm-title');
+        const confirmBody = document.getElementById('confirm-body');
+        const toastContainer = document.getElementById('toast-container');
+        const pageInfoEl = document.getElementById('page-info');
+        const pageButtonsEl = document.getElementById('page-buttons');
+
+
+        // --- TOAST UTILITY ---
+        function showToast(type, message) {
+            // ... (Fungsi showToast tetap sama dari modifikasi sebelumnya)
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            let bgColor, iconClass;
+
+            switch (type) {
+                case 'success':
+                    bgColor = isDarkMode ? 'bg-accent/80' : 'bg-accent';
+                    iconClass = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = isDarkMode ? 'bg-red-700/80' : 'bg-red-600';
+                    iconClass = 'fas fa-times-circle';
+                    break;
+                case 'loading':
+                    bgColor = isDarkMode ? 'bg-primary/80' : 'bg-primary';
+                    iconClass = 'fas fa-spinner fa-spin';
+                    break;
+                default:
+                    bgColor = isDarkMode ? 'bg-gray-600' : 'bg-gray-500';
+                    iconClass = 'fas fa-info-circle';
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast p-4 rounded-xl shadow-lg flex items-center text-white ${bgColor} transform translate-x-full opacity-0`;
+            toast.innerHTML = `
+                <i class="${iconClass} mr-3"></i>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            
+            toastContainer.prepend(toast); 
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+                toast.classList.add('translate-x-0', 'opacity-100');
+            }, 10);
+
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-0', 'opacity-100');
+                    toast.classList.add('translate-x-full', 'opacity-0');
+                    
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+            return toast; 
+        }
+
+        // --- MODAL UTILITY ---
+        function openModal(modalEl) {
+            modalEl.classList.remove('pointer-events-none', 'opacity-0');
+            modalEl.classList.add('opacity-100');
+            modalEl.querySelector(':scope > div').classList.remove('scale-95');
+            modalEl.querySelector(':scope > div').classList.add('scale-100');
+        }
+
+        function closeModal(modalEl) {
+            modalEl.querySelector(':scope > div').classList.remove('scale-100');
+            modalEl.querySelector(':scope > div').classList.add('scale-95');
+            modalEl.classList.remove('opacity-100');
+            modalEl.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function closeEditModal() {
+            closeModal(editModal);
+        }
+
+        function closeConfirmModal() {
+            closeModal(confirmModal);
+        }
+
+        // --- PAGINASI DAN RENDER ---
+
+        /**
+         * Menampilkan data anggota ke dalam tabel (menggunakan CURRENT_PAGE).
+         */
+        function renderMembers() {
+            memberListEl.innerHTML = ''; 
+            
+            if (ALL_MEMBERS_DATA.length === 0) {
+                noResultsEl.classList.remove('hidden');
+                setupPagination(0);
+                return;
+            }
+            noResultsEl.classList.add('hidden');
+
+            const startIndex = (CURRENT_PAGE - 1) * MEMBERS_PER_PAGE;
+            const endIndex = startIndex + MEMBERS_PER_PAGE;
+            const membersToRender = ALL_MEMBERS_DATA.slice(startIndex, endIndex);
+
+            membersToRender.forEach((member, index) => {
+                const globalIndex = startIndex + index + 1; // Nomor urut global
+                const row = document.createElement('tr');
+                row.classList.add('hover:bg-gray-50', 'dark:hover:bg-gray-700/50');
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${globalIndex}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${member.nama}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${member.nim}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${member.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${member.telepon || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${member.jabatan}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${member.angkatan}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <button onclick="prepareEditMember(${member.id})" class="text-primary hover:text-indigo-900 dark:hover:text-indigo-300"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="confirmDelete(${member.id}, '${member.nama}')" class="text-red-600 hover:text-red-900 dark:hover:text-red-400"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                memberListEl.appendChild(row);
+            });
+            setupPagination(ALL_MEMBERS_DATA.length);
+        }
+
+        /**
+         * Mengatur kontrol paginasi.
+         * @param {number} totalItems - Jumlah total anggota.
+         */
+        function setupPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / MEMBERS_PER_PAGE);
+            pageButtonsEl.innerHTML = '';
+            
+            // Tampilkan info halaman
+            const startItem = (CURRENT_PAGE - 1) * MEMBERS_PER_PAGE + 1;
+            const endItem = Math.min(CURRENT_PAGE * MEMBERS_PER_PAGE, totalItems);
+            pageInfoEl.textContent = totalItems > 0 ? 
+                `Menampilkan ${startItem}-${endItem} dari ${totalItems} anggota` : 
+                '';
+
+            if (totalPages <= 1) return;
+
+            // Tombol "Sebelumnya"
+            const prevBtn = createPageButton('« Sebelumnya', CURRENT_PAGE - 1, CURRENT_PAGE === 1);
+            pageButtonsEl.appendChild(prevBtn);
+
+            // Tombol angka
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = createPageButton(i, i, false, i === CURRENT_PAGE);
+                pageButtonsEl.appendChild(btn);
+            }
+
+            // Tombol "Berikutnya"
+            const nextBtn = createPageButton('Berikutnya »', CURRENT_PAGE + 1, CURRENT_PAGE === totalPages);
+            pageButtonsEl.appendChild(nextBtn);
+        }
+
+        /**
+         * Membuat elemen tombol paginasi.
+         */
+        function createPageButton(text, pageNum, isDisabled, isActive = false) {
+            const button = document.createElement('button');
+            button.textContent = text;
+            button.disabled = isDisabled;
+            button.className = `px-3 py-1 rounded-lg text-sm font-medium transition duration-150 ${
+                isDisabled
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                    : isActive
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-white dark:bg-gray-800 text-primary dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
+            }`;
+            button.onclick = () => {
+                if (!isDisabled) {
+                    goToPage(pageNum);
+                }
+            };
+            return button;
+        }
+
+        /**
+         * Mengubah halaman aktif dan merender ulang.
+         */
+        function goToPage(page) {
+            const totalPages = Math.ceil(ALL_MEMBERS_DATA.length / MEMBERS_PER_PAGE);
+            if (page >= 1 && page <= totalPages) {
+                CURRENT_PAGE = page;
+                renderMembers();
+            }
+        }
+
+        // --- FUNGSI CRUD (API) ---
+
+        /**
+         * Mengambil data anggota dari API.
+         */
+        async function fetchMembers(searchQuery = '') {
+            SEARCH_QUERY = searchQuery; // Simpan query terbaru
+            const loadingToast = showToast('loading', 'Memuat data anggota...');
+            memberListEl.innerHTML = ''; 
+            noResultsEl.classList.add('hidden');
+
+            // Catatan: Jika backend Anda mendukung paginasi, Anda harus memodifikasi URL ini
+            const url = searchQuery ? `${API_URL}?search=${encodeURIComponent(searchQuery)}` : API_URL;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                loadingToast.remove(); 
+
+                if (response.ok && data.status === 'success') {
+                    ALL_MEMBERS_DATA = data.data; // Simpan semua data
+                    CURRENT_PAGE = 1; // Reset ke halaman 1 setelah fetch baru
+                    renderMembers();
+                    if (!searchQuery) showToast('success', 'Data anggota berhasil dimuat.');
+                } else {
+                    throw new Error(data.message || 'Gagal mengambil data dari server.');
+                }
+            } catch (error) {
+                if (loadingToast && loadingToast.parentNode) loadingToast.remove(); 
+                console.error("Fetch Error:", error);
+                showToast('error', `Gagal memuat: ${error.message}`);
+            }
+        }
+
+        /**
+         * Menangani pengiriman formulir tambah anggota (POST).
+         */
+        addMemberForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const memberData = Object.fromEntries(formData.entries());
+            memberData.angkatan = parseInt(memberData.angkatan);
+
+            const loadingToast = showToast('loading', 'Menambahkan anggota baru...');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(memberData)
+                });
+
+                const data = await response.json();
+
+                loadingToast.remove();
+
+                if (response.ok) {
+                    // Hanya perlu me-fetch ulang data dengan query pencarian terakhir
+                    await fetchMembers(SEARCH_QUERY); 
+                    this.reset();
+                    showToast('success', data.message);
+                } else {
+                    throw new Error(data.message || 'Gagal menambahkan anggota.');
+                }
+            } catch (error) {
+                if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+                console.error("POST Error:", error);
+                showToast('error', error.message);
+            }
+        });
+
+        // --- FUNGSI EDIT (PUT) ---
+        function prepareEditMember(id) {
+            const memberToEdit = ALL_MEMBERS_DATA.find(m => m.id === id);
+            if (!memberToEdit) {
+                showToast('error', 'Anggota tidak ditemukan!');
+                return;
+            }
+            // Populate modal fields
+            document.getElementById('edit-id').value = memberToEdit.id;
+            document.getElementById('edit-nama').value = memberToEdit.nama;
+            document.getElementById('edit-nim').value = memberToEdit.nim;
+            document.getElementById('edit-email').value = memberToEdit.email;
+            document.getElementById('edit-telepon').value = memberToEdit.telepon;
+            document.getElementById('edit-jabatan').value = memberToEdit.jabatan;
+            document.getElementById('edit-angkatan').value = memberToEdit.angkatan;
+            openModal(editModal);
+        }
+
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const updatedData = Object.fromEntries(formData.entries());
+            const memberId = updatedData.id;
+            updatedData.angkatan = parseInt(updatedData.angkatan);
+            delete updatedData.id; 
+
+            closeEditModal();
+            const loadingToast = showToast('loading', `Memperbarui anggota ID ${memberId}...`);
+
+            try {
+                const response = await fetch(`${API_URL}/${memberId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+
+                const data = await response.json();
+
+                loadingToast.remove();
+
+                if (response.ok) {
+                    await fetchMembers(SEARCH_QUERY); 
+                    showToast('success', data.message);
+                } else {
+                    throw new Error(data.message || 'Gagal memperbarui data.');
+                }
+            } catch (error) {
+                if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+                console.error("PUT Error:", error);
+                showToast('error', error.message);
+            }
+        });
+
+        // --- FUNGSI DELETE DENGAN MODAL KONFIRMASI (Perbaikan utama ada di sini) ---
+
+        function confirmDelete(id, nama) {
+            openConfirmModal(
+                'Hapus Anggota', 
+                `Anda akan menghapus data anggota ${nama} (ID: ${id}). Tindakan ini tidak dapat dibatalkan. Lanjutkan?`, 
+                () => deleteMember(id)
+            );
+        }
+        
+        async function deleteMember(id) {
+            const loadingToast = showToast('loading', `Menghapus anggota ID ${id}...`);
+            
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE',
+                });
+
+                loadingToast.remove();
+
+                if (response.ok || response.status === 204) {
+                    // Setelah sukses hapus, muat ulang data dengan query pencarian terakhir
+                    await fetchMembers(SEARCH_QUERY); 
+                    showToast('success', `Anggota ID ${id} berhasil dihapus.`);
+                } else {
+                    const data = await response.json();
+                    throw new Error(data.message || 'Gagal menghapus anggota.');
+                }
+            } catch (error) {
+                if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+                console.error("DELETE Error:", error);
+                showToast('error', error.message);
+            }
+        }
+        
+        // --- PERBAIKAN EVENT LISTENER UNTUK MODAL HAPUS ---
+        // Membuat fungsi confirmDelete terpisah dan memastikan event listener pada confirm-ok
+        // diperbarui setiap kali modal dibuka.
+
+        // Perbaikan: Pastikan tombol 'Hapus' pada modal konfirmasi hanya punya satu listener yang mengarah ke fungsi yang benar.
+        // Diperlukan fungsi pembungkus (wrapper) untuk meng-handle event listener.
+        function setupConfirmOkListener(callback) {
+            // Temukan tombol OK yang saat ini ada
+            let currentConfirmOkBtn = document.getElementById('confirm-ok');
+            
+            // Ganti tombol lama dengan yang baru (menghapus semua event listener lama)
+            const newConfirmOkBtn = currentConfirmOkBtn.cloneNode(true);
+            currentConfirmOkBtn.parentNode.replaceChild(newConfirmOkBtn, currentConfirmOkBtn);
+            
+            // Tambahkan event listener baru
+            newConfirmOkBtn.addEventListener('click', () => {
+                callback();
+                closeConfirmModal();
+            }, { once: true }); // Menggunakan { once: true } adalah praktik yang baik
+        }
+
+        // Modifikasi openConfirmModal untuk menggunakan wrapper baru
+        function openConfirmModal(title, body, onConfirm) {
+            confirmTitle.textContent = title;
+            confirmBody.textContent = body;
+            setupConfirmOkListener(onConfirm); // Gunakan wrapper untuk memasang listener baru
+            openModal(confirmModal);
+        }
+        
+        // --- FUNGSI FILTER/CARI (Debounce) ---
+        let searchTimeout;
+        function filterMembers() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = searchInput.value.trim();
+                fetchMembers(query); 
+            }, 300); 
+        }
+        searchInput.addEventListener('input', filterMembers);
+
+
+        // --- SETUP THEME DAN SIDEBAR ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+
+        function toggleSidebar() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function setupThemeToggle() {
+            const html = document.documentElement;
+            const toggleButton = document.getElementById('theme-toggle-sidebar');
+            const themeIcon = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text-sidebar');
+
+            const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+                                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+            const applyTheme = (isDark) => {
+                if (isDark) {
+                    html.classList.add('dark');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Mode Gelap';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    html.classList.remove('dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Mode Terang';
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+            
+            applyTheme(isDarkMode); 
+
+            toggleButton.addEventListener('click', () => {
+                applyTheme(!html.classList.contains('dark'));
+            });
+        }
+
+        function checkAuthSession() {
+            const sessionData = localStorage.getItem('admin_session');
+            // Catatan: Tidak ada elemen 'welcome-username' di halaman ini, jadi display-nya dihapus.
+
+            if (!sessionData) {
+                // Redirect ke login jika sesi tidak ada
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const session = JSON.parse(sessionData);
+
+                // Cek isLoggedIn
+                if (session.isLoggedIn !== true) {
+                    localStorage.removeItem('admin_session');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+                
+                // Sesi valid
+                return true; 
+            } catch (e) {
+                console.error("Kesalahan parsing sesi:", e);
+                localStorage.removeItem('admin_session');
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        function logout() {
+            // Hapus data sesi
+            localStorage.removeItem('admin_session');
+
+            // Redirect ke halaman login
+            window.location.href = '/login.html';
+        }
+
+        // 🔹 Event listener agar tombol bisa berfungsi
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // Jalankan pengecekan sesi saat halaman dibuka
+            checkAuthSession();
+        });
+
+        function initMemberPage() {
+            setupThemeToggle();
+            fetchMembers(); 
+            checkAuthSession();
+        }
+
+        window.onload = initMemberPage;
+    </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMPS Informatika | Galeri Foto</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Konfigurasi Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome (Ikon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Custom Styling for Smooth Transition and Gallery Grid -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+        }
+        .nav-link {
+            transition: color 0.3s, background-color 0.3s;
+        }
+        /* Grid kustom untuk galeri */
+        .gallery-grid {
+            display: grid;
+            gap: 1.5rem; /* gap-6 in tailwind */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            transition: all 0.5s ease-in-out;
+        }
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gallery-image {
+            width: 100%;
+            height: 300px; /* Tinggi tetap untuk konsistensi */
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-light-bg dark:bg-dark-bg text-gray-800 dark:text-gray-100 flex flex-col">
+    
+    <!-- NAVIGASI BAR -->
+    <nav class="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo HMPS dan Kampus -->
+                <div class="flex-shrink-0 flex items-center space-x-3">
+                    <img class="h-8 w-auto hidden sm:block" src="assets/img/logo-kampus.png" onerror="this.onerror=null; this.src='https://placehold.co/32x32/10b981/ffffff?text=K'" alt="Logo Kampus"> 
+                    <img class="h-8 w-auto" src="assets/img/logo-hmps.png" onerror="this.onerror=null; this.src='https://placehold.co/32x32/4f46e5/ffffff?text=HMPS'" alt="Logo HMPS Informatika">
+                    <span class="text-xl font-bold text-primary dark:text-indigo-400 hidden sm:block">HMPS IF</span>
+                </div>
+                
+                <!-- Desktop Links -->
+                <div class="hidden md:flex md:space-x-8 items-center">
+                    <a href="index.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Home</a>
+                    <a href="about.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Tentang HMPS</a>
+                    <a href="activities.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Kegiatan</a>
+                    <a href="gallery.html" class="nav-link text-primary dark:text-indigo-400 font-semibold border-b-2 border-primary">Galeri</a>
+                    <a href="contact.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Kontak</a>
+                    <a href="login.html"
+                        class="nav-link px-3 py-2 rounded-lg bg-primary text-white hover:bg-indigo-700 transition font-medium"
+                        aria-label="Login Admin">
+                        <i class="fas fa-user-lock mr-1"></i> Login
+                    </a>
+                    
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-sun dark:hidden"></i>
+                        <i class="fas fa-moon hidden dark:inline"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Hamburger Menu -->
+                <div class="flex items-center md:hidden space-x-3">
+                    <a href="login.html"
+                        class="nav-link px-3 py-2 rounded-lg bg-primary text-white hover:bg-indigo-700 transition font-medium"
+                        aria-label="Login Admin">
+                        <i class="fas fa-user-lock mr-1"></i> Login
+                    </a>
+                    <button id="mobile-menu-button" type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-primary dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Home</a>
+                <a href="about.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Tentang HMPS</a>
+                <a href="activities.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Kegiatan</a>
+                <a href="gallery.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-50 dark:bg-gray-700 text-primary dark:text-indigo-400">Galeri</a>
+                <a href="contact.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Kontak</a>
+               
+                <button id="mobile-theme-toggle" class="w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700 mt-2">
+                    <i class="fas fa-moon mr-2"></i> Ubah Tema
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow">
+        <header class="bg-primary dark:bg-gray-900 py-16 mb-12 shadow-2xl">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-3">
+                    Galeri Dokumentasi
+                </h1>
+                <p class="text-xl text-indigo-100 dark:text-gray-300 max-w-3xl mx-auto">
+                    Kenangan terbaik dari setiap program kerja dan kegiatan HMPS Informatika.
+                </p>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            
+            <!-- Filter Section -->
+            <section class="mb-10 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">Filter Album</h2>
+                
+                <!-- Filter Kategori -->
+                <div class="mb-4">
+                    <div id="filter-category" class="flex flex-wrap gap-3">
+                        <button data-filter="all" class="filter-btn active-filter-btn">Semua Album</button>
+                        <button data-filter="Workshop" class="filter-btn">Workshop & Seminar</button>
+                        <button data-filter="Kompetisi" class="filter-btn">Lomba & Kompetisi</button>
+                        <button data-filter="Sosial" class="filter-btn">Bakti Sosial</button>
+                        <button data-filter="Internal" class="filter-btn">Kegiatan Internal</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Gallery Grid -->
+            <section>
+                <div id="gallery-container" class="gallery-grid">
+                    <!-- Gallery items will be injected here by JavaScript -->
+                </div>
+                
+                <div id="no-photos" class="hidden text-center mt-12 p-8 bg-yellow-50 dark:bg-gray-700 rounded-lg border-l-4 border-yellow-500">
+                    <i class="fas fa-image text-4xl text-yellow-500 mb-3"></i>
+                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tidak ada foto yang cocok dengan filter ini.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 dark:bg-black text-white py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <!-- Placeholder image used as fallback -->
+                <img class="h-12 w-auto mb-4" src="assets/image/LOGO-KAMPUS.webp"
+                    onerror="this.onerror=null; this.src='https://placehold.co/48x48/000000/ffffff?text=K+Putih'"
+                    alt="Logo Kampus">
+                <p class="text-gray-400 text-sm">Organisasi mahasiswa yang bergerak untuk kemajuan Prodi Informatika.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Tautan</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="about.html" class="hover:text-white transition">Visi & Misi</a></li>
+                    <li><a href="activities.html" class="hover:text-white transition">Agenda</a></li>
+                    <li><a href="gallery.html" class="hover:text-white transition">Dokumentasi</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Hubungi Kami</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li class="flex items-center"><i class="fas fa-envelope mr-3 text-accent"></i> hmps.if@unswa.ac.id
+                    </li>
+                    <li class="flex items-center"><i class="fas fa-phone mr-3 text-accent"></i> +62 878-4194-7229</li>
+                    <li class="flex items-start"><i class="fas fa-map-marker-alt mr-3 mt-1 text-accent"></i> Sekretariat
+                        HMPS IF, Gedung C</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Ikuti Kami</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-2xl text-gray-400 hover:text-white transition" aria-label="GitHub"><i
+                            class="fab fa-github"></i></a>
+                    <a href="#" class="text-2xl text-gray-400 hover:text-white transition" aria-label="Facebook"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-2xl text-gray-400 hover:text-white transition" aria-label="Instagram"><i
+                            class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+            &copy; 2025 HMPS Informatika. All rights reserved.
+        </div>
+    </footer>
+    
+    <!-- LIGHTBOX MODAL (Untuk menampilkan foto besar) -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 hidden" onclick="hideLightbox()">
+        <div class="relative max-w-5xl max-h-full" onclick="event.stopPropagation()">
+            <button onclick="hideLightbox()" class="absolute top-4 right-4 text-white text-3xl opacity-75 hover:opacity-100 transition z-50 p-2">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            <img id="lightbox-image" src="" alt="Foto Kegiatan" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
+            <p id="lightbox-caption" class="text-white text-center mt-3 text-lg font-medium"></p>
+        </div>
+    </div>
+    
+    <!-- JAVASCRIPT & JQUERY LOGIC -->
+    <script>
+    // --- KONFIGURASI API ---
+    const API_BASE_URL = 'http://localhost:3000'; // Sesuaikan port ini dengan port server Express Anda!
+    const GALLERY_ENDPOINT = `${API_BASE_URL}/gallery`;
+
+    // Variabel untuk menyimpan data galeri setelah berhasil diambil
+    let GALLERY_DATA = []; 
+    let activeCategory = 'all';
+
+    // --- FUNGSI FORMAT TANGGAL ---
+    /**
+     * Mengubah format tanggal ISO (cth: "2024-10-09T16:00:00.000Z") menjadi "10 Okt 2024".
+     */
+    function formatDate(isoDateString) {
+        if (!isoDateString) return 'Tanggal Tidak Diketahui';
+        try {
+            const date = new Date(isoDateString);
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            // Menggunakan 'id-ID' untuk format bahasa Indonesia
+            return date.toLocaleDateString('id-ID', options).replace(/\./g, '');
+        } catch (e) {
+            console.error("Gagal memformat tanggal:", e);
+            return 'Tanggal Invalid';
+        }
+    }
+
+    // --- FUNGSI AMBIL DATA DARI API (ASYNC) ---
+    async function fetchGalleryData() {
+        // Asumsi Anda memiliki elemen <div id="loading-indicator"> di HTML utama Anda
+        $('#loading-indicator').removeClass('hidden').addClass('flex'); 
+
+        try {
+            const response = await fetch(GALLERY_ENDPOINT);
+            if (!response.ok) {
+                throw new Error(`Gagal mengambil data: Status ${response.status}`);
+            }
+            const data = await response.json();
+            
+            // Peta (Map) data dari API ke struktur yang digunakan oleh renderGallery
+            GALLERY_DATA = data.map(item => ({
+                // Simpan properti asli
+                ...item,
+                // Peta image_url dari API ke src (digunakan di <img>)
+                src: item.image_url, 
+                // Peta photo_date dari API ke date (setelah diformat)
+                date: formatDate(item.photo_date) 
+            }));
+
+            $('#loading-indicator').removeClass('flex').addClass('hidden'); // Sembunyikan loading
+            return GALLERY_DATA;
+
+        } catch (error) {
+            console.error("ERROR FETCHING GALLERY DATA:", error);
+            // Tampilkan pesan error di tempat loading
+            const errorHtml = '<p class="text-red-500 font-semibold mt-4">❌ Gagal memuat data galeri. Pastikan server lokal Anda berjalan di port ' + API_BASE_URL.split(':').pop() + '.</p>';
+            $('#loading-indicator').html(errorHtml).removeClass('hidden').addClass('flex');
+            return [];
+        }
+    }
+
+    // --- FUNGSI TAMPILKAN LIGHTBOX (MODAL FOTO) ---
+    window.showLightbox = function(src, caption) {
+        $('#lightbox-image').attr('src', src);
+        $('#lightbox-caption').text(caption);
+        $('#lightbox-modal').removeClass('hidden').addClass('flex');
+    }
+
+    // --- FUNGSI TUTUP LIGHTBOX (MODAL FOTO) ---
+    window.hideLightbox = function() {
+        $('#lightbox-modal').removeClass('flex').addClass('hidden');
+    }
+
+    // --- FUNGSI UTAMA RENDER & FILTER ---
+    const renderGallery = () => {
+        const $container = $('#gallery-container');
+        $container.empty();
+        $('#no-photos').hide();
+
+        const filteredPhotos = GALLERY_DATA.filter(photo => {
+            return activeCategory === 'all' || photo.category === activeCategory;
+        });
+
+        if (filteredPhotos.length === 0) {
+            $('#no-photos').show();
+            return;
+        }
+
+        filteredPhotos.forEach(photo => {
+            const category = photo.category || 'Lainnya'; // Pastikan kategori tidak kosong
+            
+            // Menggunakan warna yang didefinisikan di config tailwind (primary, accent)
+            const badgeColor = {
+                'Workshop': 'bg-primary',
+                'Kompetisi': 'bg-yellow-500',
+                'Sosial': 'bg-accent',
+                'Internal': 'bg-red-500'
+            }[category] || 'bg-gray-500';
+
+            const itemHtml = `
+                <div class="gallery-item dark:bg-gray-800 bg-white">
+                    <img src="${photo.src}" alt="${photo.title}" class="gallery-image"
+                        onerror="this.onerror=null; this.src='https://placehold.co/800x600/94a3b8/ffffff?text=Foto+Tidak+Ditemukan'"
+                        onclick="showLightbox('${photo.src}', '${photo.title} - ${photo.date}')">
+
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">${photo.title}</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-xs font-semibold text-white px-2 py-0.5 rounded-full ${badgeColor}">${category}</span>
+                            <span class="text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-calendar-day mr-1"></i>${photo.date}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $container.append(itemHtml);
+        });
+    };
+
+    // --- EVENT LISTENERS FILTER KATEGORI (Diperbarui agar menggunakan fungsi terpisah) ---
+    window.filterGallery = function(element) {
+        activeCategory = $(element).data('filter');
+        $('.filter-btn').removeClass('active-filter-btn');
+        $(element).addClass('active-filter-btn');
+        renderGallery();
+    };
+
+    $(document).ready(async function() {
+        
+        // 1. Ambil data dari API dan tunggu hingga selesai
+        await fetchGalleryData(); 
+
+        // 2. Tampilkan galeri pertama kali (semua kategori)
+        renderGallery();
+
+        // --- SETUP FILTER BUTTONS & EVENT LISTENER ---
+        
+        const defaultBtnClass = 'px-4 py-2 rounded-full font-semibold text-sm transition shadow-sm';
+        const inactiveBtnClass = 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600';
+        const activeBtnClass = 'bg-primary text-white shadow-md hover:bg-indigo-700';
+        
+        // Terapkan class default dan event listener ke semua tombol filter
+        $('.filter-btn').each(function() {
+            $(this).addClass(defaultBtnClass + ' ' + inactiveBtnClass);
+        });
+
+        $('.filter-btn').on('click', function() {
+            // Logika class aktif/non-aktif
+            $('.filter-btn').removeClass(activeBtnClass).addClass(inactiveBtnClass);
+            $(this).removeClass(inactiveBtnClass).addClass(activeBtnClass);
+
+            // Panggil fungsi filter
+            filterGallery(this);
+        });
+        
+        // Pastikan tombol 'Semua Album' (data-filter="all") aktif saat dimuat
+        $('[data-filter="all"]').removeClass(inactiveBtnClass).addClass(activeBtnClass);
+
+        // --- LOGIC TEMA GELAP/TERANG ---
+        const toggleTheme = () => {
+            if ($('html').hasClass('dark')) {
+                $('html').removeClass('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                $('html').addClass('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        };
+
+        const initializeTheme = () => {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                $('html').addClass('dark');
+            } else {
+                $('html').removeClass('dark');
+            }
+        };
+
+        initializeTheme();
+        $('#theme-toggle').on('click', toggleTheme);
+        $('#mobile-theme-toggle').on('click', toggleTheme);
+
+        // --- LOGIC MOBILE MENU ---
+        $('#mobile-menu-button').on('click', function() {
+            $('#mobile-menu').slideToggle(300);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Organisasi | HMPS Informatika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            #sidebar {
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+        }
+
+        .bg-white,
+        .dark:bg-gray-800,
+        .shadow-lg,
+        .border-t-4 {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Style untuk Pesan Status */
+        #status-message {
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
+        onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar"
+        class="w-64 bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:sticky top-0 h-full z-50">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HMPS Admin</h1>
+        </div>
+        <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
+            <div>
+            <a href="/admin/dashboard.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-home mr-3 w-5"></i> Dashboard
+            </a>
+            <a href="/admin/manajemen-kegiatan.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+            </a>
+            <a href="/admin/kelola-galery.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+            </a>
+            <a href="/admin/pengaturan-akun.html"
+                class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
+                <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan
+            </a>
+            <a href="/admin/manajemen-anggota.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+            </a>
+            </div>
+            <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <!-- TOMBOL MODE TERANG/GELAP -->
+                <button id="theme-toggle-sidebar"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150 w-full text-left mt-4">
+                    <i id="theme-icon-sidebar" class="fas fa-sun mr-3 w-5"></i> <span id="theme-text-sidebar">Mode
+                        Terang</span>
+                </button>
+                <!-- TOMBOL LOGOUT BARU -->
+                <button id="logout-btn"
+                    class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
+                    <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
+                </button>
+                
+            </div>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+
+        <header class="mb-6 flex justify-between items-center border-b pb-4 border-gray-200 dark:border-gray-700">
+            <h2 class="text-3xl font-semibold">Pengaturan Organisasi</h2>
+            <div class="flex items-center space-x-4">
+                <div id="status-message" class="text-sm font-medium opacity-0">
+                    <i class="fas fa-spinner fa-spin mr-1 text-primary hidden" id="status-icon-saving"></i>
+                    <i class="fas fa-check-circle mr-1 text-accent hidden" id="status-icon-saved"></i>
+                    <span id="status-text"></span>
+                </div>
+                <button id="menu-button"
+                    class="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                    onclick="toggleSidebar()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="space-y-8">
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3
+                    class="text-2xl font-semibold mb-4 text-primary dark:text-indigo-400 border-b pb-2 border-gray-100 dark:border-gray-700">
+                    <i class="fas fa-bullseye mr-2"></i> Visi dan Misi Organisasi</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Perubahan akan disimpan secara **otomatis**
+                    saat Anda berhenti mengetik.</p>
+
+                <form id="vimi-form" class="space-y-6">
+                    <div>
+                        <label for="visi"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Visi</label>
+                        <textarea id="visi" name="visi" rows="3" required
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="misi" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Misi
+                            (Pisahkan dengan baris baru)</label>
+                        <textarea id="misi" name="misi" rows="5" required
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100"></textarea>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3
+                    class="text-2xl font-semibold mb-4 text-accent dark:text-emerald-400 border-b pb-2 border-gray-100 dark:border-gray-700">
+                    <i class="fas fa-history mr-2"></i> Budaya dan Sejarah Organisasi</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Perubahan akan disimpan secara **otomatis**
+                    saat Anda berhenti mengetik.</p>
+
+                <form id="culture-history-form" class="space-y-6">
+                    <div>
+                        <label for="budaya_slogan"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Budaya Organisasi
+                            (Slogan/Struktur)</label>
+                        <textarea id="budaya_slogan" name="slogan" rows="5" required
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-accent focus:border-accent text-gray-900 dark:text-gray-100"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="sejarah_deskripsi"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sejarah Organisasi
+                            (Deskripsi)</label>
+                        <textarea id="sejarah_deskripsi" name="deskripsi" rows="5" required
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-accent focus:border-accent text-gray-900 dark:text-gray-100"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="sejarah_tahun"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tahun
+                            Berdiri</label>
+                        <input type="text" id="sejarah_tahun" name="tahun_berdiri" required
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-accent focus:border-accent text-gray-900 dark:text-gray-100">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </main>
+    <script>
+        // --- BASE URL UNTUK SEMUA ENDPOINT ---
+        const BASE_URL = 'http://localhost:3000';
+        const DEBOUNCE_TIME = 1500; // 1.5 detik jeda mengetik untuk autosave
+
+        let saveTimeout;
+        let organizationData = {}; // Digunakan hanya untuk menampung data awal dan status.
+
+        // --- STATUS MESSAGE UTILITIES ---
+        const statusEl = document.getElementById('status-message');
+        const statusText = document.getElementById('status-text');
+        const statusIconSaving = document.getElementById('status-icon-saving');
+        const statusIconSaved = document.getElementById('status-icon-saved');
+
+        function showStatus(type, message) {
+            statusIconSaving.classList.add('hidden');
+            statusIconSaved.classList.add('hidden');
+
+            if (type === 'saving') {
+                statusIconSaving.classList.remove('hidden');
+                statusText.textContent = 'Menyimpan...';
+            } else if (type === 'saved') {
+                statusIconSaved.classList.remove('hidden');
+                statusText.textContent = 'Tersimpan!';
+            } else if (type === 'error') {
+                statusText.textContent = 'Gagal menyimpan!';
+                statusText.classList.add('text-red-500');
+                statusIconSaved.classList.add('hidden'); // Sembunyikan jika ada
+            } else {
+                statusText.textContent = '';
+            }
+
+            statusEl.classList.remove('opacity-0');
+            if (type === 'saved') {
+                setTimeout(() => {
+                    statusEl.classList.add('opacity-0');
+                }, 3000); // Sembunyikan setelah 3 detik
+            }
+        }
+
+        // --- FUNGSI UTILITY FETCH ---
+
+        /** Mengambil data dari endpoint spesifik */
+        async function fetchEndpoint(endpoint) {
+            try {
+                const response = await fetch(`${BASE_URL}/${endpoint}`);
+                if (!response.ok) {
+                    console.error(`HTTP error! status: ${response.status} untuk /${endpoint}`);
+                    return null;
+                }
+                const data = await response.json();
+                // Mengatasi masalah array/single object
+                const result = Array.isArray(data) ? data[0] : data;
+                return result || null;
+            } catch (error) {
+                console.error(`Gagal mengambil data dari /${endpoint}:`, error);
+                return null;
+            }
+        }
+
+        /** Menyimpan data ke endpoint spesifik */
+        async function saveEndpoint(endpoint, data) {
+            try {
+                const response = await fetch(`${BASE_URL}/${endpoint}`, {
+                    method: 'PUT', // Menggunakan PUT untuk update
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    let errorData;
+                    try { errorData = await response.json(); } catch { }
+                    throw new Error(errorData?.message || `Gagal menyimpan data ke /${endpoint}. Status: ${response.status}`);
+                }
+
+                return { success: true };
+            } catch (error) {
+                console.error(`Error saving data ke /${endpoint}:`, error);
+                return { success: false, message: error.message || "Terjadi kesalahan saat berkomunikasi dengan server." };
+            }
+        }
+
+        // --- FUNGSI AUTO SAVE DENGAN DEBOUNCE ---
+
+        /** Handler untuk menyimpan Visi dan Misi secara otomatis */
+        async function saveVisiMisi() {
+            showStatus('saving');
+            const dataToSave = {
+                visi: document.getElementById('visi').value,
+                misi: document.getElementById('misi').value
+            };
+            const result = await saveEndpoint('visi-misi', dataToSave);
+            if (result.success) {
+                showStatus('saved');
+            } else {
+                showStatus('error');
+            }
+        }
+
+        /** Handler untuk menyimpan Budaya dan Sejarah secara otomatis */
+        async function saveCultureHistory() {
+            showStatus('saving');
+            const dataToSaveBudaya = {
+                slogan: document.getElementById('budaya_slogan').value,
+                struktur: document.getElementById('budaya_slogan').value // Asumsi slogan dan struktur menggunakan input yang sama
+            };
+            const dataToSaveSejarah = {
+                deskripsi: document.getElementById('sejarah_deskripsi').value,
+                tahun_berdiri: document.getElementById('sejarah_tahun').value
+            };
+
+            const resultBudaya = await saveEndpoint('budaya', dataToSaveBudaya);
+            const resultSejarah = await saveEndpoint('sejarah', dataToSaveSejarah);
+
+            if (resultBudaya.success && resultSejarah.success) {
+                showStatus('saved');
+            } else {
+                showStatus('error');
+            }
+        }
+
+        /** Fungsi debounce untuk memicu penyimpanan */
+        function autoSave(saveFunction) {
+            clearTimeout(saveTimeout);
+            // Tampilkan pesan "Draft" segera setelah mengetik (opsional)
+            // statusText.textContent = 'Draft...'; 
+            // statusEl.classList.remove('opacity-0');
+
+            saveTimeout = setTimeout(() => {
+                saveFunction();
+            }, DEBOUNCE_TIME);
+        }
+
+        // --- FUNGSI UTAMA INI UNTUK MENGAMBIL SEMUA DATA SAAT INIT ---
+        async function loadAllData() {
+            // 1. Ambil Visi Misi
+            const vimiData = await fetchEndpoint('visi-misi');
+            if (vimiData) {
+                organizationData.visi = vimiData.visi || '';
+                organizationData.misi = vimiData.misi || '';
+            }
+
+            // 2. Ambil Sejarah
+            const sejarahData = await fetchEndpoint('sejarah');
+            if (sejarahData) {
+                organizationData.sejarah_deskripsi = sejarahData.deskripsi || '';
+                organizationData.sejarah_tahun = sejarahData.tahun_berdiri || '';
+            }
+
+            // 3. Ambil Budaya
+            const budayaData = await fetchEndpoint('budaya');
+            if (budayaData) {
+                organizationData.budaya_slogan = budayaData.slogan || '';
+                organizationData.budaya_struktur = budayaData.struktur || '';
+            }
+
+            console.log("Semua Data Organisasi berhasil dimuat:", organizationData);
+            populateForms();
+        }
+
+        // --- FUNGSI POPULATE FORMS ---
+        function populateForms() {
+            // Isi form Visi Misi
+            document.getElementById('visi').value = organizationData.visi || '';
+            document.getElementById('misi').value = organizationData.misi || '';
+
+            // Isi form Budaya & Sejarah 
+            document.getElementById('budaya_slogan').value = organizationData.budaya_slogan || organizationData.budaya_struktur || '';
+            document.getElementById('sejarah_deskripsi').value = organizationData.sejarah_deskripsi || '';
+            document.getElementById('sejarah_tahun').value = organizationData.sejarah_tahun || '';
+        }
+
+        // --- SETUP EVENT LISTENERS UNTUK AUTOSAVE ---
+        function setupAutoSaveListeners() {
+            // Visi Misi
+            document.getElementById('visi').addEventListener('input', () => autoSave(saveVisiMisi));
+            document.getElementById('misi').addEventListener('input', () => autoSave(saveVisiMisi));
+
+            // Budaya & Sejarah
+            document.getElementById('budaya_slogan').addEventListener('input', () => autoSave(saveCultureHistory));
+            document.getElementById('sejarah_deskripsi').addEventListener('input', () => autoSave(saveCultureHistory));
+            document.getElementById('sejarah_tahun').addEventListener('input', () => autoSave(saveCultureHistory));
+        }
+
+
+        // --- FUNGSI MOBILE & TEMA (TIDAK BERUBAH) ---
+
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+
+        function toggleSidebar() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function setupThemeToggle() {
+            const html = document.documentElement;
+            const toggleButton = document.getElementById('theme-toggle-sidebar');
+            const themeIcon = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text-sidebar');
+
+            const isDarkMode = localStorage.getItem('theme') === 'dark' ||
+                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+            const applyTheme = (isDark) => {
+                if (isDark) {
+                    html.classList.add('dark');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Mode Gelap';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    html.classList.remove('dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Mode Terang';
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            applyTheme(isDarkMode);
+
+            toggleButton.addEventListener('click', () => {
+                applyTheme(!html.classList.contains('dark'));
+            });
+        }
+        function checkAuthSession() {
+            const sessionData = localStorage.getItem('admin_session');
+            // Catatan: Tidak ada elemen 'welcome-username' di halaman ini, jadi display-nya dihapus.
+
+            if (!sessionData) {
+                // Redirect ke login jika sesi tidak ada
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const session = JSON.parse(sessionData);
+
+                // Cek isLoggedIn
+                if (session.isLoggedIn !== true) {
+                    localStorage.removeItem('admin_session');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+
+                // Sesi valid
+                return true;
+            } catch (e) {
+                console.error("Kesalahan parsing sesi:", e);
+                localStorage.removeItem('admin_session');
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        function logout() {
+            // Hapus data sesi
+            localStorage.removeItem('admin_session');
+
+            // Redirect ke halaman login
+            window.location.href = '/login.html';
+        }
+
+        // 🔹 Event listener agar tombol bisa berfungsi
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // Jalankan pengecekan sesi saat halaman dibuka
+            checkAuthSession();
+        });
+
+        // --- INITIALISASI HALAMAN ---
+
+        function initSettingsPage() {
+            setupThemeToggle();
+            loadAllData();
+            setupAutoSaveListeners(); // Daftarkan listener autosave
+            checkAuthSession(); // Cek sesi autentikasi
+        }
+
+        // Jalankan inisialisasi setelah halaman dimuat
+        window.onload = initSettingsPage;
+    </script>
+
+</body>
+
+</html>

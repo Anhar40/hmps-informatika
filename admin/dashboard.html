@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | HMPS Informatika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Menggunakan font Inter dan memastikan transisi halus */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Style untuk membuat sidebar lengket di desktop */
+        @media (min-width: 768px) {
+            #sidebar {
+                /* Perbaikan: Atur height ke 100% dari viewport height */
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+        }
+
+        /* Transisi untuk elemen Dark Mode */
+        .bg-white,
+        .dark:bg-gray-800,
+        .shadow-lg,
+        .border-t-4 {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
+        onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar"
+        class="w-64 bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:sticky top-0 h-full z-50">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HMPS Admin</h1>
+        </div>
+        <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
+            <!-- Top Navigation Links -->
+            <div>
+                <a href="dashboard.html"
+                    class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
+                    <i class="fas fa-home mr-3 w-5"></i> Dashboard
+                </a>
+                <a href="manajemen-kegiatan.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+                </a>
+                <a href="kelola-galery.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+                </a>
+                <a href="pengaturan-akun.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan Akun
+                </a>
+                <a href="manajemen-anggota.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+                </a>
+            </div>
+
+            <!-- Bottom Utilities (Theme Toggle & Logout) -->
+            <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button id="theme-toggle"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150 w-full text-left">
+                    <i id="theme-icon" class="fas fa-sun mr-3 w-5"></i> <span id="theme-text">Mode Terang</span>
+                </button>
+                
+                <!-- TOMBOL LOGOUT BARU -->
+                <button id="logout-btn"
+                    class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
+                    <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+
+        <header class="mb-6 flex justify-between items-center border-b pb-4 border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-4">
+                <h2 class="text-3xl font-semibold">Dashboard</h2>
+                <!-- Placeholder untuk menampilkan nama pengguna yang login -->
+                <span id="welcome-username" class="text-lg font-medium text-indigo-600 dark:text-indigo-400 hidden sm:inline-block"></span>
+            </div>
+            <button id="menu-button"
+                class="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                onclick="toggleSidebar()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </header>
+        
+        <!-- ID Sesi tidak ditampilkan, tapi disimpan di variabel JS -->
+        <!-- <p id="session-id" class="hidden"></p> -->
+
+        <div id="stats-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg border-t-4 border-indigo-500 hover:shadow-xl transition duration-200 transform hover:-translate-y-1">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Kegiatan Telah Terlaksana</p>
+                <p id="total-done-activities" class="text-3xl font-bold mt-1">
+                    <i class="fas fa-spinner fa-spin text-indigo-500 text-xl"></i>
+                </p>
+                <p id="activities-this-month" class="text-xs text-gray-500 dark:text-gray-400 mt-2">Data kegiatan yang
+                    sudah selesai</p>
+            </div>
+
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg border-t-4 border-yellow-500 hover:shadow-xl transition duration-200 transform hover:-translate-y-1">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Anggota</p>
+                <p id="total-members" class="text-3xl font-bold mt-1">
+                    <i class="fas fa-spinner fa-spin text-yellow-500 text-xl"></i>
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Anggota terdaftar</p>
+            </div>
+
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg border-t-4 border-teal-500 hover:shadow-xl transition duration-200 transform hover:-translate-y-1">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Foto Galeri</p>
+                <p id="total-photos" class="text-3xl font-bold mt-1">
+                    <i class="fas fa-spinner fa-spin text-teal-500 text-xl"></i>
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Jumlah foto yang terarsip</p>
+            </div>
+
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg border-t-4 border-red-500 hover:shadow-xl transition duration-200 transform hover:-translate-y-1">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Kegiatan Mendatang</p>
+                <p id="upcoming-count" class="text-3xl font-bold mt-1">
+                    <i class="fas fa-spinner fa-spin text-red-500 text-xl"></i>
+                </p>
+                <p class="text-xs text-red-500 dark:text-red-400 mt-2">Segera buat rencana anggaran!</p>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-semibold mb-4 border-b pb-2 border-gray-100 dark:border-gray-700">Kegiatan
+                    Mendatang Terdekat</h3>
+                <div id="upcoming-activities-list" class="space-y-3">
+                    <p id="loading-activities" class="text-gray-500 dark:text-gray-400">Memuat data kegiatan...</p>
+                </div>
+                <div class="mt-4 text-right">
+                    <a href="manajemen-kegiatan.html"
+                        class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline text-sm">Lihat Semua
+                        Kegiatan <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-semibold mb-4 border-b pb-2 border-gray-100 dark:border-gray-700"><i
+                        class="fas fa-user-plus mr-1"></i> 5 Anggota Terbaru</h3>
+                <ul id="recent-members-list" class="space-y-4 text-sm">
+                    <p id="loading-members" class="text-gray-500 dark:text-gray-400">Memuat data anggota...</p>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // NOTE: Fungsi toggleSidebar harus di scope global karena dipanggil langsung dari onclick="..." di HTML
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+
+        /**
+         * Mengaktifkan/menonaktifkan sidebar mobile.
+         */
+        function toggleSidebar() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            let authenticatedUser = null; // Menyimpan data sesi pengguna yang sah
+
+            // --- 1. FUNGSI UTAMA: PENCEK SESI & REDIRECT ---
+            const checkAuthSession = () => {
+                const sessionData = localStorage.getItem('admin_session');
+                const usernameDisplay = document.getElementById('welcome-username');
+
+                // 1. Cek jika sesi tidak ada
+                if (!sessionData) {
+                    window.location.href = '/login.html';
+                    return false; // Autentikasi gagal
+                }
+
+                try {
+                    const session = JSON.parse(sessionData);
+
+                    // 2. Cek apakah isLoggedIn bernilai true
+                    if (session.isLoggedIn !== true) {
+                        localStorage.removeItem('admin_session');
+                        window.location.href = '/login.html';
+                        return false; // Autentikasi gagal
+                    }
+
+                    // 3. SESI VALID: Simpan data pengguna
+                    authenticatedUser = session;
+                    
+                    // Tampilkan nama pengguna di header
+                    if (usernameDisplay) {
+                        usernameDisplay.textContent = `Halo, ${session.username || 'Admin'}!`;
+                    }
+                    
+                    return true; // Autentikasi sukses
+
+                } catch (e) {
+                    // 4. Data localStorage tidak valid (bukan JSON)
+                    console.error("Kesalahan parsing sesi:", e);
+                    localStorage.removeItem('admin_session');
+                    window.location.href = '/login.html';
+                    return false; // Autentikasi gagal
+                }
+            };
+
+            // --- 2. LOGIC LOGOUT ---
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(event) {
+                    event.preventDefault(); // Mencegah navigasi default link '#'
+                    // Catatan: Gunakan modal kustom, bukan alert/confirm
+                    if (confirm('Apakah Anda yakin ingin logout?')) {
+                        localStorage.removeItem('admin_session'); // Hapus sesi
+                        window.location.href = '/login.html'; // Redirect ke halaman login
+                    }
+                });
+            }
+
+
+            // --- 3. KONFIGURASI API & UTILITIES (Dihapus dari scope global) ---
+
+            const BASE_URL = 'http://localhost:3000';
+            const API_MEMBER = `${BASE_URL}/api/anggota`;
+            const API_ACTIVITY = `${BASE_URL}/activities`;
+            const API_GALLERY = `${BASE_URL}/gallery`;
+
+
+            /**
+             * Memformat tanggal menjadi DD Mmm YYYY
+             */
+            function formatDate(dateString) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                try {
+                    const date = new Date(dateString);
+                    const localDate = new Date(date.getTime() + (date.getTimezoneOffset() * 60000));
+                    return localDate.toLocaleDateString('id-ID', options);
+                } catch {
+                    return dateString;
+                }
+            }
+
+            // formatRelativeTime tidak digunakan di template ini, tapi saya biarkan untuk berjaga-jaga
+            // function formatRelativeTime(dateString) { ... } 
+
+
+            // --- 4. FUNGSI RENDER STATS (Ambil data dari API) ---
+
+            /**
+             * Memperbarui statistik Card dengan data dari API.
+             */
+            function renderStats(allActivities, allMembers, allGallery) {
+                // Hapus ikon loading spinner
+                document.querySelectorAll('#stats-container i.fa-spinner').forEach(i => i.remove());
+
+                // 1. Hitung Kegiatan Telah Terlaksana (status: done)
+                const doneActivities = allActivities.filter(a => a.status && a.status.toLowerCase() === 'done');
+                document.getElementById('total-done-activities').textContent = doneActivities.length;
+
+                // 2. Hitung Total Anggota
+                document.getElementById('total-members').textContent = allMembers.length;
+
+                // 3. Hitung Total Foto Galeri
+                document.getElementById('total-photos').textContent = allGallery.length;
+
+                // 4. Hitung Kegiatan Mendatang (status: upcoming)
+                const upcomingActivities = allActivities.filter(a => a.status && a.status.toLowerCase() === 'upcoming');
+                document.getElementById('upcoming-count').textContent = upcomingActivities.length;
+
+                // Detail tambahan (kegiatan bulan ini)
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+
+                const activitiesThisMonth = allActivities.filter(a => {
+                    try {
+                        const date = new Date(a.activity_date);
+                        return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+                    } catch {
+                        return false;
+                    }
+                }).length;
+
+                document.getElementById('activities-this-month').innerHTML = `<i class="fas fa-calendar-check mr-1"></i> ${activitiesThisMonth} Kegiatan di bulan ini`;
+            }
+
+            /**
+             * Memperbarui daftar Kegiatan Mendatang.
+             */
+            function renderUpcomingActivities(allActivities) {
+                const listContainer = document.getElementById('upcoming-activities-list');
+                listContainer.innerHTML = '';
+
+                const upcoming = allActivities
+                    .filter(a => a.status && a.status.toLowerCase() === 'upcoming')
+                    .sort((a, b) => new Date(a.activity_date) - new Date(b.activity_date)); // Urutkan tanggal terdekat
+
+                if (upcoming.length === 0) {
+                    listContainer.innerHTML = '<p class="p-3 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-lg">Tidak ada kegiatan yang akan datang.</p>';
+                    return;
+                }
+
+                // Ambil 5 kegiatan mendatang terdekat
+                upcoming.slice(0, 5).forEach(activity => {
+                    const dateText = formatDate(activity.activity_date);
+                    const item = `
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl flex justify-between items-center border-l-4 border-red-500 dark:border-red-400 transition hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm">
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-white">${activity.title}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${dateText} - ${activity.category || 'Belum Ditentukan'}</p>
+                            </div>
+                            <a href="manajemen-kegiatan.html?id=${activity.id}" title="Lihat/Edit Kegiatan" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition duration-150 p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    `;
+                    listContainer.insertAdjacentHTML('beforeend', item);
+                });
+            }
+
+            /**
+             * Merender 5 anggota terbaru yang mendaftar.
+             */
+            function renderRecentMembers(allMembers) {
+                const listContainer = document.getElementById('recent-members-list');
+                listContainer.innerHTML = '';
+
+                const loadingElement = document.getElementById('loading-members');
+                if (loadingElement) loadingElement.remove();
+
+                if (allMembers.length === 0) {
+                    listContainer.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Belum ada anggota yang terdaftar.</p>';
+                    return;
+                }
+
+                // Urutkan berdasarkan ID (asumsi ID yang lebih tinggi berarti lebih baru) dan ambil 5 teratas
+                const recentMembers = allMembers
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 5);
+
+                recentMembers.forEach(member => {
+                    const item = `
+                        <li class="flex items-center space-x-3 border-b pb-3 border-gray-100 dark:border-gray-700 last:border-b-0 last:pb-0">
+                            <i class="fas fa-user-circle text-2xl text-accent dark:text-emerald-400 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold text-gray-900 dark:text-white">${member.nama}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">${member.jabatan || 'Anggota Baru'} | ${member.nim}</p>
+                            </div>
+                        </li>
+                    `;
+                    listContainer.insertAdjacentHTML('beforeend', item);
+                });
+            }
+
+
+            // --- 5. FUNGSI UTAMA (FETCH DATA) ---
+
+            async function fetchData(url, defaultValue = []) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        console.error(`Gagal mengambil data dari ${url}. Status: ${response.status}`);
+                        return defaultValue;
+                    }
+                    const data = await response.json();
+
+                    // Penanganan respons dari endpoint yang berbeda
+                    if (data && data.status === 'success' && Array.isArray(data.data)) {
+                        return data.data; // Untuk anggota dan gallery (format respons API umum)
+                    } else if (Array.isArray(data)) {
+                        return data; // Untuk activities (jika mengembalikan array langsung)
+                    }
+                    return data.data || data || defaultValue; // Fallback
+                } catch (error) {
+                    console.error(`Error fetching data dari ${url}:`, error);
+                    return defaultValue;
+                }
+            }
+
+            /**
+             * Mengambil semua data yang dibutuhkan secara paralel.
+             */
+            async function fetchDashboardData() {
+                // Ganti placeholder dengan angka 0 sebelum fetch, lalu biarkan spinner aktif
+                document.getElementById('total-done-activities').innerHTML = '<i class="fas fa-spinner fa-spin text-indigo-500 text-xl"></i>';
+                document.getElementById('total-members').innerHTML = '<i class="fas fa-spinner fa-spin text-yellow-500 text-xl"></i>';
+                document.getElementById('total-photos').innerHTML = '<i class="fas fa-spinner fa-spin text-teal-500 text-xl"></i>';
+                document.getElementById('upcoming-count').innerHTML = '<i class="fas fa-spinner fa-spin text-red-500 text-xl"></i>';
+                document.getElementById('activities-this-month').innerHTML = `Memuat...`;
+
+                try {
+                    // Gunakan Promise.all untuk mengambil data dari 3 endpoint secara bersamaan
+                    const [activities, members, gallery] = await Promise.all([
+                        fetchData(API_ACTIVITY),
+                        fetchData(API_MEMBER),
+                        fetchData(API_GALLERY),
+                    ]);
+
+                    // Render semua bagian dashboard
+                    renderStats(activities, members, gallery);
+                    renderUpcomingActivities(activities);
+                    renderRecentMembers(members);
+                } catch (error) {
+                    console.error("Gagal memuat data dashboard:", error);
+                    // Set status ke error jika fetch gagal
+                    document.getElementById('total-done-activities').textContent = 'Error';
+                    document.getElementById('total-members').textContent = 'Error';
+                    document.getElementById('total-photos').textContent = 'Error';
+                    document.getElementById('upcoming-count').textContent = 'Error';
+                    document.getElementById('activities-this-month').textContent = 'Gagal memuat data.';
+                }
+            }
+
+
+            // --- 6. FUNGSI TEMA ---
+
+            function setupThemeToggle() {
+                const html = document.documentElement;
+                const toggleButton = document.getElementById('theme-toggle');
+                const themeIcon = document.getElementById('theme-icon');
+                const themeText = document.getElementById('theme-text');
+
+                const isDarkMode = localStorage.getItem('theme') === 'dark' ||
+                    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+                const applyTheme = (isDark) => {
+                    if (isDark) {
+                        html.classList.add('dark');
+                        themeIcon.classList.replace('fa-sun', 'fa-moon');
+                        themeText.textContent = 'Mode Gelap';
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        html.classList.remove('dark');
+                        themeIcon.classList.replace('fa-moon', 'fa-sun');
+                        themeText.textContent = 'Mode Terang';
+                        localStorage.setItem('theme', 'light');
+                    }
+                };
+
+                applyTheme(isDarkMode);
+
+                if (toggleButton) {
+                    toggleButton.addEventListener('click', () => {
+                        applyTheme(!html.classList.contains('dark'));
+                    });
+                }
+            }
+
+
+            // --- 7. INITIALISASI DASHBOARD ---
+
+            function initDashboard() {
+                // 1. Lakukan pengecekan sesi terlebih dahulu
+                const isAuthenticated = checkAuthSession();
+
+                // 2. Jika sesi valid, lanjutkan memuat data dan mengatur tema
+                if (isAuthenticated) {
+                    setupThemeToggle();
+                    fetchDashboardData();
+                }
+                // Jika tidak valid, checkAuthSession() sudah melakukan redirect ke login.html
+            }
+
+            // Panggil inisialisasi ketika DOM content sudah siap
+            initDashboard();
+        });
+    </script>
+
+</body>
+
+</html>

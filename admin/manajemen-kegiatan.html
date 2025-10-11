@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Kegiatan | HMPS Informatika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // Konfigurasi Tailwind CSS
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Menggunakan font Inter dan memastikan transisi halus */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Style untuk membuat sidebar lengket di desktop */
+        @media (min-width: 768px) {
+            #sidebar {
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+        }
+        /* Transisi untuk elemen Dark Mode */
+        .bg-white, .dark:bg-gray-800, .shadow-lg, .border-t-4, .modal-content {
+            transition: all 0.3s ease-in-out;
+        }
+        /* Style untuk Modal (Umum) */
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transform: translateY(-50px);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal.open .modal-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:sticky top-0 h-full z-50">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HMPS Admin</h1>
+        </div>
+        <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
+            <div>
+            <a href="/admin/dashboard.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-home mr-3 w-5"></i> Dashboard
+            </a>
+            <a href="/admin/manajement-kegiatan.html" class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
+                <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+            </a>
+            <a href="/admin/kelola-galery.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+            </a>
+            <a href="/admin/pengaturan-akun.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan Akun
+            </a>
+            <a href="/admin/manajemen-anggota.html" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+            </a>
+            </div>
+            <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button id="theme-toggle-sidebar" class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150 w-full text-left mt-4">
+                    <i id="theme-icon-sidebar" class="fas fa-sun mr-3 w-5"></i> <span id="theme-text-sidebar">Mode Terang</span>
+                </button>
+                    <!-- TOMBOL LOGOUT BARU --> 
+                <button id="logout-btn"
+                    class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
+                    <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+        
+        <header class="mb-6 flex justify-between items-center border-b pb-4 border-gray-200 dark:border-gray-700">
+            <h2 class="text-3xl font-semibold">Manajemen Kegiatan</h2>
+            <button id="menu-button" class="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition" onclick="toggleSidebar()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </header>
+
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <button id="add-activity-button" class="w-full sm:w-auto bg-primary hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-150" onclick="openModal()">
+                <i class="fas fa-plus mr-2"></i> Tambah Kegiatan Baru
+            </button>
+            <div class="relative w-full sm:w-auto">
+                <input type="text" id="search-input" placeholder="Cari Kegiatan..." class="w-full py-2 pl-4 pr-10 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100 transition duration-150">
+                <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg overflow-x-auto">
+            <h3 class="text-xl font-semibold mb-4 border-b pb-2 border-gray-100 dark:border-gray-700">Daftar Kegiatan HMPS</h3>
+            
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama Kegiatan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kategori</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="activities-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Memuat data kegiatan...</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div id="pagination-controls" class="mt-4 flex justify-between items-center">
+            </div>
+        </div>
+    </main>
+
+    <div id="activity-modal" class="modal fixed inset-0 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-content bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 id="modal-title" class="text-2xl font-semibold text-gray-900 dark:text-white">Tambah Kegiatan Baru</h3>
+                <button onclick="window.closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="activity-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="activity-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Kegiatan</label>
+                        <input type="text" id="activity-title" name="title" required class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label for="activity-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tanggal Kegiatan</label>
+                        <input type="date" id="activity-date" name="activity_date" required class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label for="activity-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kategori</label>
+                        <select id="activity-category" name="category" required class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                            <option value="Pendidikan">Pendidikan</option>
+                            <option value="Kompetisi">Kompetisi</option>
+                            <option value="Sosial">Sosial</option>
+                            <option value="Internal">Internal</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="activity-status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+                        <select id="activity-status" name="status" required class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                            <option value="upcoming">Akan Datang</option>
+                            <option value="done">Selesai</option>
+                            <option value="cancelled">Dibatalkan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="activity-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
+                        <textarea id="activity-description" name="description" rows="3" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" onclick="window.closeModal()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Batal</button>
+                    <button type="submit" id="save-activity-button" class="px-4 py-2 bg-primary text-white rounded-xl hover:bg-indigo-700 transition">Simpan Kegiatan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="delete-modal" class="modal fixed inset-0 flex items-center justify-center p-4 z-[60] opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-content bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-sm p-6 transform translate-y-0">
+            <div class="text-center">
+                <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Konfirmasi Hapus</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Anda yakin ingin menghapus kegiatan:</p>
+                <p id="delete-activity-title" class="font-bold text-lg mb-6 text-red-600 dark:text-red-400">[Nama Kegiatan]</p>
+            </div>
+            
+            <div class="flex justify-between space-x-3">
+                <button onclick="window.closeDeleteModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium">Batal</button>
+                <button id="confirm-delete-button" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition font-medium">Ya, Hapus Permanen</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Memastikan semua fungsi yang dipanggil dari HTML (onclick) tersedia secara global
+        window.toggleSidebar = toggleSidebar;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.openEditModal = openEditModal;
+        
+        // Perubahan: Fungsi deleteActivity lama diganti oleh openDeleteModal
+        window.openDeleteModal = openDeleteModal; 
+        window.closeDeleteModal = closeDeleteModal;
+        window.executeDelete = executeDelete; // Fungsi penghapusan yang dieksekusi dari modal
+
+        // --- KONFIGURASI API ---
+        const API_ENDPOINT = 'http://localhost:3000/activities';
+        
+        let activities = []; // Data yang sudah diambil
+        let currentActivityId = null; 
+        let deleteActivityId = null; // ID untuk modal hapus
+
+        // --- FUNGSI UTILITAS ---
+        
+        // ⭐ FUNGSI TOAST NOTIFICATION ⭐
+        function showToast(message, type = 'success') {
+            let backgroundColor = '#10b981'; // Default: Emerald (Success)
+            let icon = 'fas fa-check-circle';
+
+            if (type === 'error') {
+                backgroundColor = '#ef4444'; // Red (Error)
+                icon = 'fas fa-times-circle';
+            } else if (type === 'info') {
+                backgroundColor = '#3b82f6'; // Blue (Info/Delete)
+                icon = 'fas fa-info-circle';
+            }
+            
+            Toastify({
+                text: `<i class="${icon} mr-2"></i> ${message}`,
+                duration: 4000,
+                newWindow: true,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: backgroundColor,
+                    borderRadius: '0.75rem', // rounded-xl
+                    padding: '12px 20px',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                },
+                escapeMarkup: false, // Memungkinkan HTML di dalam text (untuk icon)
+            }).showToast();
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            try {
+                // Penanganan Timezone untuk menampilkan tanggal yang benar
+                const date = new Date(dateString);
+                date.setMinutes(date.getMinutes() + date.getTimezoneOffset()); 
+                return date.toLocaleDateString('id-ID', options);
+            } catch {
+                return dateString;
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const lowerStatus = status ? status.toLowerCase() : 'unknown';
+            let colorClass = '';
+            let text = '';
+            switch (lowerStatus) {
+                case 'upcoming':
+                    colorClass = 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300';
+                    text = 'Akan Datang';
+                    break;
+                case 'done':
+                    colorClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                    text = 'Selesai';
+                    break;
+                case 'cancelled':
+                    colorClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                    text = 'Dibatalkan';
+                    break;
+                default:
+                    colorClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+                    text = 'Tidak Jelas';
+            }
+            return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${colorClass}">${text}</span>`;
+        }
+
+        function setTableLoading(isLoading) {
+            const tbody = document.getElementById('activities-table-body');
+            if (isLoading) {
+                 tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data kegiatan dari server...
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // ------------------------------------
+        // --- FUNGSI API INTERACTION & PENCARIAN (DIPERBAIKI) ---
+        // ------------------------------------
+
+        async function fetchActivities(searchQuery = '') {
+            setTableLoading(true);
+
+            try {
+                // Perbaikan: Hapus parameter `title_like` dari URL untuk menggunakan filtering lokal yang lebih konsisten 
+                // jika Anda menggunakan Json-server, atau sesuaikan dengan API backend yang sebenarnya.
+                // Untuk contoh ini, kita akan selalu fetch semua dan filter di client side 
+                // agar filtering berjalan instan dan data yang di-cache di `activities` selalu lengkap.
+                
+                const response = await fetch(API_ENDPOINT);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Simpan data mentah yang lengkap
+                const rawActivities = await response.json();
+                activities = rawActivities;
+                
+                // Terapkan filter lokal jika ada query
+                let filteredActivities = activities;
+                if (searchQuery) {
+                    const lowerQuery = searchQuery.toLowerCase();
+                    filteredActivities = activities.filter(activity => 
+                        // Mencari berdasarkan judul, kategori, atau deskripsi
+                        activity.title.toLowerCase().includes(lowerQuery) ||
+                        activity.category.toLowerCase().includes(lowerQuery) ||
+                        (activity.description && activity.description.toLowerCase().includes(lowerQuery))
+                    );
+                }
+
+                // Urutkan data berdasarkan tanggal
+                filteredActivities.sort((a, b) => new Date(b.activity_date) - new Date(a.activity_date));
+                
+                renderActivitiesTable(filteredActivities);
+
+            } catch (error) {
+                console.error('Gagal mengambil data kegiatan:', error);
+                const tbody = document.getElementById('activities-table-body');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-sm font-semibold text-red-500 dark:text-red-400">
+                            ❌ Gagal terhubung ke API di ${API_ENDPOINT}. Pastikan server backend berjalan.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // ------------------------------------
+        // --- FUNGSI RENDER TABEL (TETAP) ---
+        // ------------------------------------
+        
+        function renderActivitiesTable(data) {
+            const tbody = document.getElementById('activities-table-body');
+            tbody.innerHTML = ''; // Kosongkan tabel
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                            Tidak ada kegiatan ditemukan.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            data.forEach(activity => {
+                const dateFormatted = formatDate(activity.activity_date);
+                const statusBadge = getStatusBadge(activity.status);
+                
+                const row = `
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${activity.id}</td>
+                        <td class="px-6 py-4 text-sm font-medium">${activity.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${dateFormatted}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${activity.category}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                            <button onclick="window.openEditModal(${activity.id})" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="window.openDeleteModal(${activity.id})" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+        
+        // --- FUNGSI MODAL TAMBAH/EDIT (TETAP) ---
+        
+        const mainModal = document.getElementById('activity-modal');
+        const form = document.getElementById('activity-form');
+        const modalTitle = document.getElementById('modal-title');
+        const saveButton = document.getElementById('save-activity-button');
+        
+        function openModal() {
+            currentActivityId = null; 
+            form.reset(); 
+            modalTitle.textContent = 'Tambah Kegiatan Baru';
+            saveButton.textContent = 'Simpan Kegiatan';
+            
+            mainModal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+        }
+        
+        function openEditModal(id) {
+            const activity = activities.find(a => a.id === id);
+            if (!activity) {
+                showToast('Kegiatan tidak ditemukan!', 'error'); 
+                return;
+            }
+
+            currentActivityId = id; 
+            modalTitle.textContent = 'Edit Kegiatan: ' + activity.title;
+            saveButton.textContent = 'Perbarui Kegiatan';
+
+            // Isi formulir
+            document.getElementById('activity-title').value = activity.title || '';
+            document.getElementById('activity-date').value = activity.activity_date || ''; 
+            document.getElementById('activity-category').value = activity.category || 'Lainnya';
+            document.getElementById('activity-status').value = (activity.status || 'upcoming').toLowerCase();
+            document.getElementById('activity-description').value = activity.description || '';
+
+            mainModal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+        }
+
+        function closeModal() {
+            mainModal.classList.remove('open', 'opacity-100', 'pointer-events-auto');
+            currentActivityId = null;
+        }
+
+
+        // ----------------------------------------------
+        // --- FUNGSI MODAL HAPUS (BARU) ---
+        // ----------------------------------------------
+
+        const deleteModal = document.getElementById('delete-modal');
+        const deleteActivityTitle = document.getElementById('delete-activity-title');
+        const confirmDeleteButton = document.getElementById('confirm-delete-button');
+
+        function openDeleteModal(id) {
+            const activity = activities.find(a => a.id === id);
+            if (!activity) {
+                showToast('Kegiatan tidak ditemukan!', 'error');
+                return;
+            }
+
+            deleteActivityId = id;
+            deleteActivityTitle.textContent = activity.title;
+            
+            // Set action pada tombol konfirmasi
+            confirmDeleteButton.onclick = () => window.executeDelete(deleteActivityId);
+
+            deleteModal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+        }
+
+        function closeDeleteModal() {
+            deleteModal.classList.remove('open', 'opacity-100', 'pointer-events-auto');
+            deleteActivityId = null;
+        }
+
+        async function executeDelete(id) {
+            const activityToDelete = activities.find(a => a.id === id);
+            if (!activityToDelete) return;
+            
+            confirmDeleteButton.disabled = true;
+            confirmDeleteButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menghapus...`;
+
+            try {
+                const response = await fetch(`${API_ENDPOINT}/${id}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Gagal menghapus data: ${response.status} ${response.statusText}`);
+                }
+
+                closeDeleteModal(); 
+                await fetchActivities(document.getElementById('search-input').value); // Refresh data, pertahankan hasil pencarian
+                showToast(`Kegiatan "${activityToDelete.title}" berhasil dihapus.`, 'info'); 
+
+            } catch (error) {
+                console.error('Error saat menghapus kegiatan:', error);
+                showToast(`Gagal menghapus kegiatan. Error: ${error.message}`, 'error');
+                closeDeleteModal(); // Tutup modal jika gagal
+            } finally {
+                confirmDeleteButton.disabled = false;
+                confirmDeleteButton.innerHTML = `Ya, Hapus Permanen`;
+            }
+        }
+        
+        // ---------------------------------------
+        // --- HANDLER SIMPAN/PERBARUI KEGIATAN (TETAP) ---
+        // ---------------------------------------
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            saveButton.disabled = true;
+            saveButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            data.status = data.status.toLowerCase();
+
+            let url = API_ENDPOINT;
+            let method = 'POST';
+            let successMessage = `Kegiatan "${data.title}" berhasil ditambahkan!`;
+
+            if (currentActivityId) {
+                // UPDATE (Mode Edit)
+                url = `${API_ENDPOINT}/${currentActivityId}`; 
+                method = 'PUT';
+                successMessage = `Kegiatan "${data.title}" berhasil diperbarui!`;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Gagal menyimpan data: ${response.status} ${response.statusText}`);
+                }
+                
+                // Refresh data, pertahankan hasil pencarian
+                await fetchActivities(document.getElementById('search-input').value); 
+                closeModal();
+                
+                showToast(successMessage, 'success'); 
+
+            } catch (error) {
+                console.error('Error saat menyimpan kegiatan:', error);
+                showToast(`Gagal menyimpan kegiatan. Error: ${error.message}`, 'error');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.innerHTML = currentActivityId ? 'Perbarui Kegiatan' : 'Simpan Kegiatan';
+            }
+        });
+
+
+        // --- HANDLER PENCARIAN (DIPERBAIKI) ---
+        
+        let searchTimeout;
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            // Debouncing untuk menghindari terlalu banyak request saat mengetik
+            clearTimeout(searchTimeout); 
+            const searchTerm = e.target.value;
+            
+            searchTimeout = setTimeout(() => {
+                // Panggil fetchActivities dengan query pencarian baru
+                fetchActivities(searchTerm);
+            }, 300); // Tunggu 300ms setelah user berhenti mengetik
+        });
+
+
+        // --- FUNGSI MOBILE & TEMA (TETAP) ---
+
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+
+        function toggleSidebar() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function setupThemeToggle() {
+            const html = document.documentElement;
+            const toggleButton = document.getElementById('theme-toggle-sidebar');
+            const themeIcon = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text-sidebar');
+
+            const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+                                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+            const applyTheme = (isDark) => {
+                if (isDark) {
+                    html.classList.add('dark');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Mode Gelap';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    html.classList.remove('dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Mode Terang';
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+            
+            applyTheme(isDarkMode); 
+
+            toggleButton.addEventListener('click', () => {
+                applyTheme(!html.classList.contains('dark'));
+            });
+        }
+
+        function checkAuthSession() {
+            const sessionData = localStorage.getItem('admin_session');
+            // Catatan: Tidak ada elemen 'welcome-username' di halaman ini, jadi display-nya dihapus.
+
+            if (!sessionData) {
+                // Redirect ke login jika sesi tidak ada
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const session = JSON.parse(sessionData);
+
+                // Cek isLoggedIn
+                if (session.isLoggedIn !== true) {
+                    localStorage.removeItem('admin_session');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+                
+                // Sesi valid
+                return true; 
+            } catch (e) {
+                console.error("Kesalahan parsing sesi:", e);
+                localStorage.removeItem('admin_session');
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+        function logout() {
+            // Hapus data sesi
+            localStorage.removeItem('admin_session');
+
+            // Redirect ke halaman login
+            window.location.href = '/login.html';
+        }
+
+        // 🔹 Event listener agar tombol bisa berfungsi
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // Jalankan pengecekan sesi saat halaman dibuka
+            checkAuthSession();
+        });
+
+
+        // ------------------------------------------
+        // --- INITIALISASI HALAMAN (TETAP) ---
+        // ------------------------------------------
+
+        function initManagementPage() {
+            setupThemeToggle();
+            // Panggil fetchActivities tanpa parameter awal, ini akan fetch semua data
+            fetchActivities(); 
+            checkAuthSession();
+        }
+
+        window.onload = initManagementPage;
+    </script>
+
+</body>
+</html>

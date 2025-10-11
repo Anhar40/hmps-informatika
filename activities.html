@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMPS Informatika | Kegiatan Kami</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Konfigurasi Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome (Ikon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Custom Styling for Smooth Transition -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+        }
+        .nav-link {
+            transition: color 0.3s, background-color 0.3s;
+        }
+        .activity-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body class="bg-light-bg dark:bg-dark-bg text-gray-800 dark:text-gray-100 flex flex-col">
+    
+    <!-- NAVIGASI BAR -->
+    <nav class="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo HMPS dan Kampus -->
+                <div class="flex-shrink-0 flex items-center space-x-3">
+                    <img class="h-8 w-auto hidden sm:block" src="assets/img/logo-kampus.png" onerror="this.onerror=null; this.src='https://placehold.co/32x32/10b981/ffffff?text=K'" alt="Logo Kampus"> 
+                    <img class="h-8 w-auto" src="assets/img/logo-hmps.png" onerror="this.onerror=null; this.src='https://placehold.co/32x32/4f46e5/ffffff?text=HMPS'" alt="Logo HMPS Informatika">
+                    <span class="text-xl font-bold text-primary dark:text-indigo-400 hidden sm:block">HMPS IF</span>
+                </div>
+                
+                <!-- Desktop Links -->
+                <div class="hidden md:flex md:space-x-8 items-center">
+                    <a href="index.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Home</a>
+                    <a href="about.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Tentang HMPS</a>
+                    <a href="activities.html" class="nav-link text-primary dark:text-indigo-400 font-semibold border-b-2 border-primary">Kegiatan</a>
+                    <a href="gallery.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Galeri</a>
+                    <a href="contact.html" class="nav-link px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Kontak</a>
+                    <a href="login.html"
+                        class="nav-link px-3 py-2 rounded-lg bg-primary text-white hover:bg-indigo-700 transition font-medium"
+                        aria-label="Login Admin">
+                        <i class="fas fa-user-lock mr-1"></i> Login
+                    </a>
+                    
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-sun dark:hidden"></i>
+                        <i class="fas fa-moon hidden dark:inline"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Hamburger Menu -->
+                <div class="flex items-center md:hidden space-x-3">
+                    <a href="login.html"
+                        class="nav-link px-3 py-2 rounded-lg bg-primary text-white hover:bg-indigo-700 transition font-medium"
+                        aria-label="Login Admin">
+                        <i class="fas fa-user-lock mr-1"></i> Login
+                    </a>
+                    <button id="mobile-menu-button" type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-primary dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Home</a>
+                <a href="about.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Tentang HMPS</a>
+                <a href="activities.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-50 dark:bg-gray-700 text-primary dark:text-indigo-400">Kegiatan</a>
+                <a href="gallery.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Galeri</a>
+                <a href="contact.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Kontak</a>
+                
+                <button id="mobile-theme-toggle" class="w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700 mt-2">
+                    <i class="fas fa-moon mr-2"></i> Ubah Tema
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow">
+        <header class="bg-primary dark:bg-gray-900 py-16 mb-12 shadow-2xl">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-3">
+                    Agenda dan Kegiatan
+                </h1>
+                <p class="text-xl text-indigo-100 dark:text-gray-300 max-w-3xl mx-auto">
+                    Jadwal kegiatan terbaru, dari workshop, kompetisi, hingga bakti sosial.
+                </p>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            
+            <!-- Filter Section -->
+            <section class="mb-10 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">Filter Kegiatan</h2>
+                
+                <!-- Filter Kategori -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Berdasarkan Kategori:</label>
+                    <div id="filter-category" class="flex flex-wrap gap-3">
+                        <button data-filter="all" class="filter-btn active-filter-btn">Semua</button>
+                        <button data-filter="Pendidikan" class="filter-btn">Pendidikan</button>
+                        <button data-filter="Kompetisi" class="filter-btn">Kompetisi</button>
+                        <button data-filter="Sosial" class="filter-btn">Sosial</button>
+                    </div>
+                </div>
+
+                <!-- Filter Status -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Berdasarkan Status:</label>
+                    <div id="filter-status" class="flex flex-wrap gap-3">
+                        <button data-filter="all" class="filter-status-btn active-status-btn">Semua Status</button>
+                        <button data-filter="upcoming" class="filter-status-btn">Akan Datang</button>
+                        <button data-filter="done" class="filter-status-btn">Telah Dilaksanakan</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Activities Grid -->
+            <section>
+                <div id="activities-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Activities will be injected here by JavaScript -->
+                </div>
+                
+                <div id="no-activities" class="hidden text-center mt-12 p-8 bg-yellow-50 dark:bg-gray-700 rounded-lg border-l-4 border-yellow-500">
+                    <i class="fas fa-exclamation-circle text-4xl text-yellow-500 mb-3"></i>
+                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tidak ada kegiatan yang cocok dengan filter Anda.</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Coba atur ulang filter kategori dan status.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 dark:bg-black text-white py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <!-- Placeholder image used as fallback -->
+                <img class="h-12 w-auto mb-4" src="assets/image/LOGO-KAMPUS.webp"
+                    onerror="this.onerror=null; this.src='https://placehold.co/48x48/000000/ffffff?text=K+Putih'"
+                    alt="Logo Kampus">
+                <p class="text-gray-400 text-sm">Organisasi mahasiswa yang bergerak untuk kemajuan Prodi Informatika.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Tautan</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="about.html" class="hover:text-white transition">Visi & Misi</a></li>
+                    <li><a href="activities.html" class="hover:text-white transition">Agenda</a></li>
+                    <li><a href="gallery.html" class="hover:text-white transition">Dokumentasi</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Hubungi Kami</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li class="flex items-center"><i class="fas fa-envelope mr-3 text-accent"></i> hmps.if@unswa.ac.id
+                    </li>
+                    <li class="flex items-center"><i class="fas fa-phone mr-3 text-accent"></i> +62 878-4194-7229</li>
+                    <li class="flex items-start"><i class="fas fa-map-marker-alt mr-3 mt-1 text-accent"></i> Sekretariat
+                        HMPS IF, Gedung C</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Ikuti Kami</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-2xl text-gray-400 hover:text-white transition" aria-label="GitHub"><i
+                            class="fab fa-github"></i></a>
+                    <a href="#" class="text-2xl text-gray-400 hover:text-white transition" aria-label="Facebook"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-2xl text-gray-400 hover:text-white transition" aria-label="Instagram"><i
+                            class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+            &copy; 2025 HMPS Informatika. All rights reserved.
+        </div>
+    </footer>
+    
+    <!-- DETAIL MODAL (Pop-up) -->
+    <div id="activity-detail-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100" id="modal-title"></h3>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+                <div class="flex items-center space-x-4">
+                    <span id="modal-status-badge" class="text-xs font-semibold px-3 py-1 rounded-full"></span>
+                    <span id="modal-category" class="text-sm font-medium text-primary dark:text-indigo-400"></span>
+                </div>
+
+                <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2 text-accent"></i>
+                    Tanggal: <span id="modal-date" class="ml-2 font-semibold text-gray-800 dark:text-gray-200"></span>
+                </p>
+
+                <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <h4 class="text-lg font-semibold mb-2">Deskripsi Lengkap:</h4>
+                    <p id="modal-description" class="text-gray-700 dark:text-gray-300"></p>
+                </div>
+                
+                <p id="modal-more-info" class="text-sm text-gray-600 dark:text-gray-400 italic mt-4">
+                    Untuk informasi pendaftaran, silakan hubungi kontak resmi HMPS.
+                </p>
+            </div>
+
+            <!-- Modal Footer (Optional Action Button) -->
+            <div id="modal-footer" class="p-6 bg-gray-50 dark:bg-gray-900 text-right">
+                <a href="#" id="modal-action-btn" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-indigo-700 focus:outline-none transition sm:text-sm">
+                    Daftar Sekarang
+                </a>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- JAVASCRIPT & JQUERY LOGIC -->
+<script>
+    // --- KONFIGURASI API ---
+    const API_BASE_URL = 'http://localhost:3000'; // Pastikan port ini sesuai dengan server Express Anda!
+    const ACTIVITIES_ENDPOINT = `${API_BASE_URL}/activities`;
+    
+    // Variabel global untuk menyimpan data kegiatan
+    let ACTIVITIES = [];
+    let activeCategory = 'all';
+    let activeStatus = 'all';
+
+    // --- FUNGSI FORMAT TANGGAL ---
+    /**
+     * Mengubah format tanggal ISO (cth: "2024-10-09T16:00:00.000Z") menjadi "10 Okt 2024".
+     */
+    function formatDate(isoDateString) {
+        if (!isoDateString) return 'Tanggal Tidak Diketahui';
+        try {
+            const date = new Date(isoDateString);
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            // Menggunakan 'id-ID' untuk format bahasa Indonesia
+            return date.toLocaleDateString('id-ID', options).replace(/\./g, '');
+        } catch (e) {
+            console.error("Gagal memformat tanggal:", e);
+            return 'Tanggal Invalid';
+        }
+    }
+
+    // --- FUNGSI AMBIL DATA DARI API (ASYNC) ---
+    async function fetchActivitiesData() {
+        // Karena Anda tidak memiliki div #loading-indicator di HTML, kita tambahkan div penampung grid
+        const $grid = $('#activities-grid');
+        $grid.html('<div id="loading-indicator" class="col-span-full text-center p-8"><p class="text-primary font-semibold">Memuat data kegiatan...</p></div>');
+        const $loading = $('#loading-indicator');
+        
+        try {
+            const response = await fetch(ACTIVITIES_ENDPOINT);
+            if (!response.ok) {
+                throw new Error(`Gagal mengambil data: Status ${response.status}`);
+            }
+            const data = await response.json();
+            
+            // Peta (Map) data dari API ke struktur yang digunakan oleh renderActivities
+            ACTIVITIES = data.map(item => ({
+                ...item,
+                // Mengubah 'activity_date' dari API menjadi 'date' yang sudah diformat
+                date: formatDate(item.activity_date) 
+            }));
+
+            $loading.remove(); // Sembunyikan dan hapus loading indicator
+            return ACTIVITIES;
+
+        } catch (error) {
+            console.error("❌ ERROR FETCHING ACTIVITIES DATA:", error);
+            // Tampilkan pesan error
+            const errorHtml = '<p class="text-red-500 font-semibold mt-4">❌ Gagal memuat data kegiatan. Pastikan server berjalan dan CORS aktif.</p>';
+            $loading.html(errorHtml);
+            return [];
+        }
+    }
+
+    // --- FUNGSI TAMPILKAN MODAL DETAIL ---
+    window.showActivityDetail = function(activityId) {
+        // Mencari kegiatan berdasarkan ID dari data yang sudah diambil
+        const activity = ACTIVITIES.find(a => a.id == activityId);
+        if (!activity) return;
+
+        // Tentukan styling status (Logika ini sudah benar)
+        let statusClass = '';
+        let statusLabel = '';
+        const isUpcoming = activity.status === 'upcoming'; 
+
+        if (isUpcoming) {
+            statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+            statusLabel = 'Akan Datang';
+            $('#modal-footer').show();
+            // Menggunakan activity.link dari data API
+            $('#modal-action-btn').text('Daftar Sekarang').attr('href', activity.link || '#'); 
+            $('#modal-more-info').text('Untuk informasi pendaftaran, silakan hubungi kontak resmi HMPS.');
+        } else {
+            statusClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+            statusLabel = 'Telah Dilaksanakan';
+            $('#modal-footer').hide();
+            $('#modal-more-info').text('Kegiatan ini telah selesai dilaksanakan. Silakan lihat dokumentasinya di halaman Galeri.');
+        }
+
+
+        // Isi konten Modal
+        $('#modal-title').text(activity.title);
+        $('#modal-category').text('Kategori: ' + (activity.category || '-'));
+        $('#modal-date').text(activity.date); // Menggunakan tanggal yang sudah diformat
+        $('#modal-description').text(activity.description || 'Tidak ada detail tambahan.');
+        $('#modal-status-badge').removeClass().addClass('text-xs font-semibold px-3 py-1 rounded-full ' + statusClass).text(statusLabel);
+
+        // Tampilkan Modal
+        $('#activity-detail-modal').removeClass('hidden').addClass('flex');
+    }
+    
+    // --- FUNGSI TUTUP MODAL DETAIL ---
+    const hideActivityDetail = () => {
+        $('#activity-detail-modal').removeClass('flex').addClass('hidden');
+    }
+
+    // --- FUNGSI UTAMA RENDER & FILTER (Perbaikan di sini) ---
+    const renderActivities = () => {
+        const $grid = $('#activities-grid');
+        $grid.empty();
+        $('#no-activities').hide();
+
+        // 1. Filtering
+        const filteredActivities = ACTIVITIES.filter(activity => {
+            const categoryMatch = activeCategory === 'all' || activity.category === activeCategory;
+            // ✨ PERBAIKAN KRITIS UNTUK FILTER STATUS
+            const statusMatch = activeStatus === 'all' || activity.status === activeStatus; 
+            return categoryMatch && statusMatch;
+        });
+
+        if (filteredActivities.length === 0) {
+            $('#no-activities').show();
+            return;
+        }
+
+        // 2. Rendering
+        filteredActivities.forEach(activity => {
+            let iconClass = 'fa-star'; // Default icon
+            let borderColor = 'border-gray-300';
+            let statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+            let statusLabel = 'Status Unknown';
+
+            // Styling berdasarkan Kategori
+            if (activity.category === 'Pendidikan') {
+                iconClass = 'fa-book-open text-primary';
+                borderColor = 'border-primary';
+            } else if (activity.category === 'Kompetisi') {
+                iconClass = 'fa-trophy text-yellow-500';
+                borderColor = 'border-yellow-500';
+            } else if (activity.category === 'Sosial') {
+                iconClass = 'fa-hands-helping text-accent';
+                borderColor = 'border-accent';
+            }
+            
+            // Styling berdasarkan Status
+            if (activity.status === 'upcoming') {
+                statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+                statusLabel = 'Akan Datang';
+            } else if (activity.status === 'done') {
+                statusClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                statusLabel = 'Selesai';
+            }
+
+            // Tautan 'Detail' memanggil showActivityDetail(id)
+            const cardHtml = `
+                <div class="activity-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-t-4 ${borderColor}">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium ${statusClass} px-3 py-1 rounded-full">${statusLabel}</span>
+                        <i class="fas ${iconClass} text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">${activity.title}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                        <i class="fas fa-calendar-alt mr-2"></i>${activity.date} | Kategori: ${activity.category || 'Lainnya'}
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 text-sm">${activity.description || 'Tidak ada ringkasan.'}</p>
+                    <a href="javascript:void(0)" onclick="showActivityDetail(${activity.id})" class="mt-4 inline-block text-primary dark:text-indigo-400 font-medium hover:underline">
+                        Detail <i class="fas fa-arrow-right ml-1 text-sm"></i>
+                    </a>
+                </div>
+            `;
+            $grid.append(cardHtml);
+        });
+    };
+
+    // --- EVENT LISTENERS FILTER KATEGORI & STATUS ---
+    
+    // Fungsi pembantu untuk mengelola class tombol filter
+    const updateFilterClasses = (selector, activeFilter) => {
+        const defaultBtnClass = 'px-4 py-2 rounded-full font-semibold text-sm transition';
+        const inactiveBtnClass = 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600';
+        const activeBtnClass = 'bg-primary text-white shadow-md hover:bg-indigo-700';
+
+        $(selector).each(function() {
+            const isMatch = $(this).data('filter') === activeFilter;
+            $(this).removeClass(activeBtnClass + ' ' + inactiveBtnClass).addClass(defaultBtnClass);
+
+            if (isMatch) {
+                $(this).addClass(activeBtnClass);
+            } else {
+                $(this).addClass(inactiveBtnClass);
+            }
+        });
+    };
+
+    $('.filter-btn').on('click', function() {
+        activeCategory = $(this).data('filter');
+        updateFilterClasses('.filter-btn', activeCategory);
+        renderActivities();
+    });
+
+    $('.filter-status-btn').on('click', function() {
+        activeStatus = $(this).data('filter');
+        updateFilterClasses('.filter-status-btn', activeStatus);
+        renderActivities();
+    });
+
+
+    // --- JQUERY READY (INISIALISASI) ---
+    $(document).ready(async function() { // Menjadikan ready function sebagai ASYNC
+
+        // Event Listener untuk tombol tutup modal
+        $('#close-modal-btn').on('click', hideActivityDetail);
+        $('#activity-detail-modal').on('click', function(e) {
+            if ($(e.target).is('#activity-detail-modal')) {
+                hideActivityDetail();
+            }
+        });
+
+        // 1. Ambil data dari API dan tunggu hingga selesai
+        await fetchActivitiesData(); 
+
+        // 2. Tampilkan galeri pertama kali (semua kategori dan status)
+        renderActivities();
+
+        // 3. Inisialisasi status tombol filter
+        updateFilterClasses('.filter-btn', activeCategory);
+        updateFilterClasses('.filter-status-btn', activeStatus);
+
+        // --- LOGIC TEMA GELAP/TERANG ---
+        const toggleTheme = () => {
+            if ($('html').hasClass('dark')) {
+                $('html').removeClass('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                $('html').addClass('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        };
+
+        const initializeTheme = () => {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                $('html').addClass('dark');
+            } else {
+                $('html').removeClass('dark');
+            }
+        };
+
+        initializeTheme();
+        $('#theme-toggle').on('click', toggleTheme);
+        $('#mobile-theme-toggle').on('click', toggleTheme);
+
+        // --- LOGIC MOBILE MENU ---
+        $('#mobile-menu-button').on('click', function() {
+            $('#mobile-menu').slideToggle(300);
+        });
+    });
+</script>
+</body>
+</html>

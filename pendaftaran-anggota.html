@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Anggota Baru | HMPS Informatika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .toast-container {
+            right: 1rem;
+            bottom: 1rem;
+            z-index: 1000;
+        }
+        .toast {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-primary dark:text-indigo-400 mb-2">Pendaftaran Anggota Baru</h1>
+            <p class="text-gray-600 dark:text-gray-400">Silakan isi formulir di bawah untuk mendaftar sebagai anggota HMPS Informatika.</p>
+        </header>
+
+        <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-xl shadow-2xl">
+            <h3 class="text-2xl font-semibold mb-6 text-accent dark:text-emerald-400 border-b pb-2 border-gray-100 dark:border-gray-700">Data Diri Mahasiswa</h3>
+
+            <form id="registration-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label for="nim" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIM / Nomor Induk</label>
+                        <input type="text" id="nim" name="nim" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Aktif</label>
+                        <input type="email" id="email" name="email" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label for="telepon" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Telepon (WhatsApp)</label>
+                        <input type="tel" id="telepon" name="telepon" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                        <label for="jabatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pilihan Divisi/Jabatan Awal</label>
+                        <input type="text" id="jabatan" name="jabatan" value="Anggota Baru" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                    <div>
+                        <label for="angkatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tahun Angkatan Masuk</label>
+                        <input type="number" id="angkatan" name="angkatan" required 
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="bg-accent hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition duration-200 flex items-center">
+                        <i class="fas fa-paper-plane mr-2"></i> Kirim Pendaftaran
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+
+    <div id="toast-container" class="fixed toast-container space-y-2 max-w-xs w-full">
+        </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api/anggota';
+        const registrationForm = document.getElementById('registration-form');
+        const toastContainer = document.getElementById('toast-container');
+
+        // --- TOAST UTILITY (Sama dengan halaman Admin) ---
+        function showToast(type, message) {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            let bgColor, iconClass;
+
+            switch (type) {
+                case 'success':
+                    bgColor = isDarkMode ? 'bg-accent/80' : 'bg-accent';
+                    iconClass = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = isDarkMode ? 'bg-red-700/80' : 'bg-red-600';
+                    iconClass = 'fas fa-times-circle';
+                    break;
+                case 'loading':
+                    bgColor = isDarkMode ? 'bg-primary/80' : 'bg-primary';
+                    iconClass = 'fas fa-spinner fa-spin';
+                    break;
+                default:
+                    bgColor = isDarkMode ? 'bg-gray-600' : 'bg-gray-500';
+                    iconClass = 'fas fa-info-circle';
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast p-4 rounded-xl shadow-lg flex items-center text-white ${bgColor} transform translate-x-full opacity-0`;
+            toast.innerHTML = `
+                <i class="${iconClass} mr-3"></i>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            
+            toastContainer.prepend(toast); 
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+                toast.classList.add('translate-x-0', 'opacity-100');
+            }, 10);
+
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-0', 'opacity-100');
+                    toast.classList.add('translate-x-full', 'opacity-0');
+                    
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+            return toast; 
+        }
+
+        // --- FUNGSI UTAMA PENDAFTARAN (POST) ---
+        registrationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const memberData = Object.fromEntries(formData.entries());
+            
+            // Konversi angkatan ke integer
+            memberData.angkatan = parseInt(memberData.angkatan);
+
+            const loadingToast = showToast('loading', 'Mengirim data pendaftaran...');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(memberData)
+                });
+
+                const data = await response.json();
+
+                loadingToast.remove();
+
+                if (response.ok) {
+                    this.reset();
+                    showToast('success', `Pendaftaran berhasil! ${data.message}`);
+                } else {
+                    // Tangani error server (misalnya: NIM sudah terdaftar)
+                    throw new Error(data.message || 'Pendaftaran gagal. Silakan coba lagi.');
+                }
+            } catch (error) {
+                if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+                console.error("Registration Error:", error);
+                showToast('error', `Terjadi kesalahan: ${error.message}`);
+            }
+        });
+
+        // --- SETUP THEME (Opsional, agar tampilan sesuai) ---
+        function setupThemeToggle() {
+            const html = document.documentElement;
+            // Gunakan tema gelap jika preferensi OS gelap, atau jika sudah tersimpan gelap
+            const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+                                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+            if (isDarkMode) {
+                html.classList.add('dark');
+            } else {
+                 html.classList.remove('dark');
+            }
+        }
+        window.onload = setupThemeToggle;
+
+    </script>
+</body>
+</html>

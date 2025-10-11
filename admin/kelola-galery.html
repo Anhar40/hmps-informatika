@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Galeri | HMPS Informatika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Styling Sidebar Sticky untuk Desktop */
+        @media (min-width: 768px) {
+            #sidebar {
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+        }
+
+        /* Transisi untuk Dark Mode */
+        .bg-white,
+        .dark\:bg-gray-800,
+        .shadow-lg,
+        .border-t-4,
+        .modal-content,
+        .bg-gray-100,
+        .dark\:bg-gray-900 {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Styling Modal (untuk fade in background) */
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Styling Modal Content (untuk slide up) */
+        .modal-content-transition {
+            transform: translateY(-50px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* State terbuka untuk Modal */
+        .modal.open .modal-content-transition {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
+        onclick="window.toggleSidebar()"></div>
+
+    <aside id="sidebar"
+        class="w-64 bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:sticky top-0 h-full z-50">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HMPS Admin</h1>
+        </div>
+        <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
+            <div>
+            <a href="/admin/dashboard.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-home mr-3 w-5"></i> Dashboard
+            </a>
+            <a href="/admin/manajemen-kegiatan.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+            </a>
+            <a href="/admin/kelola-galery.html"
+                class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
+                <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+            </a>
+            <a href="/admin/pengaturan-akun.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan Akun
+            </a>
+            <a href="/admin/manajemen-anggota.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+            </a>
+            </div>
+
+
+            <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button id="theme-toggle-sidebar"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150 w-full text-left mt-4">
+                    <i id="theme-icon-sidebar" class="fas fa-sun mr-3 w-5"></i> <span id="theme-text-sidebar">Mode
+                        Terang</span>
+                </button>
+
+                <!-- TOMBOL LOGOUT BARU -->
+                <button id="logout-btn"
+                    class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
+                    <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+
+        <header class="mb-6 flex justify-between items-center border-b pb-4 border-gray-200 dark:border-gray-700">
+            <h2 class="text-3xl font-semibold">Kelola Galeri Foto</h2>
+            <button id="menu-button"
+                class="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                onclick="window.toggleSidebar()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </header>
+
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+            <button id="add-photo-button"
+                class="w-full sm:w-auto bg-primary hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-150"
+                onclick="window.openModal()">
+                <i class="fas fa-plus-circle mr-2"></i> Tambah Foto (URL)
+            </button>
+            <div class="relative w-full sm:w-auto">
+                <input type="text" id="search-input" placeholder="Cari Foto/Kategori..."
+                    class="w-full py-2 pl-4 pr-10 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100 transition duration-150">
+                <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+
+        <p id="loading-message" class="text-center text-gray-500 dark:text-gray-400 mb-4">Memuat data galeri...</p>
+
+        <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        </div>
+
+        <div id="empty-gallery-message"
+            class="hidden col-span-full text-center p-10 bg-white dark:bg-gray-800 rounded-xl shadow-lg mt-6">
+            <i class="fas fa-camera-retro text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+            <p class="text-xl font-medium text-gray-500 dark:text-gray-400">Belum ada foto dalam galeri.</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Silahkan tambahkan URL foto pertama Anda!</p>
+        </div>
+
+    </main>
+
+    <div id="photo-modal"
+        class="modal fixed inset-0 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-content-transition bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 id="modal-title" class="text-2xl font-semibold text-gray-900 dark:text-white">Tambahkan Foto Baru
+                    (URL)</h3>
+                <button onclick="window.closeModal()"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form id="photo-form">
+                <input type="hidden" id="photo-id" name="id">
+                <div class="space-y-4">
+                    <div>
+                        <label for="photo-title"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Foto</label>
+                        <input type="text" id="photo-title" name="title" required
+                            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150">
+                    </div>
+                    <div>
+                        <label for="photo-date"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tanggal Foto
+                            Diambil</label>
+                        <input type="date" id="photo-date" name="photo_date" required
+                            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150">
+                    </div>
+                    <div>
+                        <label for="photo-category"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kategori
+                            (Kegiatan)</label>
+                        <select id="photo-category" name="category" required
+                            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150">
+                            <option value="Workshop">Workshop</option>
+                            <option value="Kompetisi">Kompetisi</option>
+                            <option value="Sosial">Sosial</option>
+                            <option value="Internal">Internal</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div id="image-url-field">
+                        <label for="image-url"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL Gambar</label>
+                        <input type="url" id="image-url" name="image_url" required
+                            placeholder="Contoh: https://contoh.com/foto-kegiatan.jpg"
+                            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Pastikan URL gambar dapat diakses
+                            publik.</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" onclick="window.closeModal()"
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Batal</button>
+                    <button type="submit" id="save-photo-button"
+                        class="px-4 py-2 bg-primary text-white rounded-xl hover:bg-indigo-700 transition">Simpan
+                        Foto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="message-modal"
+        class="modal fixed inset-0 flex items-center justify-center p-4 z-[9999] opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="message-content"
+            class="modal-content-transition bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-sm p-6">
+            <div id="message-icon-container" class="text-center mb-4"></div>
+            <p id="message-text" class="text-center text-lg font-medium text-gray-900 dark:text-white mb-4"></p>
+            <div id="message-actions" class="flex justify-center space-x-3">
+                <button id="modal-confirm-button"
+                    class="hidden px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition">Ya,
+                    Hapus</button>
+                <button id="modal-close-button"
+                    class="px-4 py-2 bg-primary text-white rounded-xl hover:bg-indigo-700 transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- KONSTANTA API ---
+        const API_BASE_URL = 'http://localhost:3000/gallery';
+
+        let gallery = [];
+        let currentPhotoId = null;
+        let resolveConfirm; // Untuk menahan eksekusi fungsi confirm kustom
+
+
+        // --- FUNGSI UTAMA UNTUK PESAN KUSTOM (Menggantikan alert dan confirm) ---
+        const messageModal = document.getElementById('message-modal');
+        const messageText = document.getElementById('message-text');
+        const messageIconContainer = document.getElementById('message-icon-container');
+        const modalCloseButton = document.getElementById('modal-close-button');
+        const modalConfirmButton = document.getElementById('modal-confirm-button');
+
+        /**
+         * Menampilkan modal pesan kustom.
+         * @param {string} message - Pesan yang akan ditampilkan.
+         * @param {'info'|'success'|'error'|'confirm'} type - Jenis pesan.
+         * @returns {Promise<boolean>|void} Mengembalikan Promise<boolean> untuk type 'confirm'.
+         */
+        function openMessageModal(message, type = 'info') {
+            messageText.textContent = message;
+            modalConfirmButton.onclick = null;
+            modalConfirmButton.classList.add('hidden');
+            modalCloseButton.onclick = null; // Reset default close action
+
+            let iconHtml = '';
+
+            if (type === 'error') {
+                iconHtml = '<i class="fas fa-times-circle text-6xl text-red-500"></i>';
+                modalCloseButton.textContent = 'Tutup';
+                modalCloseButton.classList.remove('bg-primary');
+                modalCloseButton.classList.add('bg-red-600', 'hover:bg-red-700');
+            } else if (type === 'success') {
+                iconHtml = '<i class="fas fa-check-circle text-6xl text-accent"></i>';
+                modalCloseButton.textContent = 'OK';
+                modalCloseButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+                modalCloseButton.classList.add('bg-primary', 'hover:bg-indigo-700');
+            } else if (type === 'confirm') {
+                iconHtml = '<i class="fas fa-exclamation-triangle text-6xl text-yellow-500"></i>';
+                modalConfirmButton.classList.remove('hidden');
+                modalConfirmButton.textContent = 'Ya, Hapus';
+                modalCloseButton.textContent = 'Batal';
+                modalCloseButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+                modalCloseButton.classList.add('bg-gray-500', 'hover:bg-gray-600', 'dark:bg-gray-700', 'dark:hover:bg-gray-600', 'text-white', 'dark:text-gray-300'); // Ganti warna Batal
+
+                // Setup promise untuk confirm
+                return new Promise(resolve => {
+                    resolveConfirm = resolve;
+                    modalConfirmButton.onclick = () => { closeMessageModal(); resolve(true); };
+                    modalCloseButton.onclick = () => { closeMessageModal(); resolve(false); };
+                    messageIconContainer.innerHTML = iconHtml;
+                    messageModal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+                    document.getElementById('message-content').classList.remove('translate-y-full');
+                });
+            } else { // info
+                iconHtml = '<i class="fas fa-info-circle text-6xl text-primary"></i>';
+                modalCloseButton.textContent = 'OK';
+                modalCloseButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+                modalCloseButton.classList.add('bg-primary', 'hover:bg-indigo-700');
+            }
+
+            messageIconContainer.innerHTML = iconHtml;
+            modalCloseButton.onclick = closeMessageModal;
+            messageModal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+            document.getElementById('message-content').classList.remove('translate-y-full');
+        }
+
+        function closeMessageModal() {
+            messageModal.classList.remove('open', 'opacity-100', 'pointer-events-auto');
+        }
+
+
+        // --- FUNGSI UTILITAS ---
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('id-ID', options);
+            } catch {
+                return dateString;
+            }
+        }
+
+        function getCategoryColor(category) {
+            switch (category.toLowerCase()) {
+                case 'workshop': return 'text-indigo-600 dark:text-indigo-400';
+                case 'kompetisi': return 'text-accent dark:text-emerald-400';
+                case 'sosial': return 'text-yellow-600 dark:text-yellow-400';
+                case 'internal': return 'text-red-600 dark:text-red-400';
+                default: return 'text-gray-500 dark:text-gray-400';
+            }
+        }
+
+
+        // --- FUNGSI PENGAMBILAN DATA DARI API (READ) ---
+
+        async function fetchGalleryData() {
+            const loadingMessage = document.getElementById('loading-message');
+
+            if (loadingMessage) loadingMessage.classList.remove('hidden');
+
+            try {
+                const response = await fetch(API_BASE_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                gallery = await response.json();
+
+                // Sortir berdasarkan tanggal terbaru
+                gallery.sort((a, b) => new Date(b.photo_date) - new Date(a.photo_date));
+
+                renderGallery(gallery);
+            } catch (error) {
+                console.error("Gagal mengambil data galeri:", error);
+                const container = document.getElementById('gallery-container');
+                container.innerHTML = `<p class="col-span-full text-center text-red-500 dark:text-red-400">⚠️ Gagal memuat data. Pastikan server API berjalan di <code class="font-mono">${API_BASE_URL}</code>.</p>`;
+            } finally {
+                if (loadingMessage) loadingMessage.classList.add('hidden');
+            }
+        }
+
+
+        // --- FUNGSI RENDER GALERI ---
+
+        function renderGallery(data) {
+            const container = document.getElementById('gallery-container');
+            const emptyMessage = document.getElementById('empty-gallery-message');
+
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                emptyMessage.classList.remove('hidden');
+                return;
+            }
+
+            emptyMessage.classList.add('hidden');
+
+            data.forEach(photo => {
+                const dateFormatted = formatDate(photo.photo_date);
+                const categoryColor = getCategoryColor(photo.category);
+                const imageUrl = photo.image_url || 'https://via.placeholder.com/400?text=No+Image';
+
+                const card = `
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-200 transform hover:-translate-y-1">
+                    <div class="relative h-48 bg-gray-200 dark:bg-gray-700">
+                        <img src="${imageUrl}" alt="${photo.title}" class="w-full h-full object-cover" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x400/94A3B8/FFFFFF?text=URL+Invalid'">
+                    </div>
+                    
+                    <div class="p-4 space-y-1">
+                        <p class="text-sm font-medium ${categoryColor}">${photo.category}</p>
+                        <h4 class="text-lg font-bold truncate">${photo.title}</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400"><i class="fas fa-calendar-alt mr-1"></i> ${dateFormatted}</p>
+                    </div>
+
+                    <div class="p-4 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3">
+                        <button onclick="window.openEditModal(${photo.id})" class="text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition" title="Edit Detail">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button onclick="window.deletePhoto(${photo.id})" class="text-sm text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition" title="Hapus Permanen">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `;
+                container.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+
+        // --- FUNGSI MODAL (TAMBAH/EDIT) ---
+
+        const modal = document.getElementById('photo-modal');
+        const form = document.getElementById('photo-form');
+        const modalTitle = document.getElementById('modal-title');
+
+        window.openModal = function () { // Dijadikan global
+            currentPhotoId = null;
+            form.reset();
+            modalTitle.textContent = 'Tambahkan Foto Baru (URL)';
+            document.getElementById('save-photo-button').textContent = 'Simpan Foto';
+
+            modal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+            document.querySelector('#photo-modal .modal-content-transition').classList.remove('translate-y-[-50px]'); // Memastikan transisi berjalan
+        }
+
+        window.openEditModal = function (id) { // Dijadikan global
+            const photo = gallery.find(p => p.id === id);
+            if (!photo) return;
+
+            currentPhotoId = id;
+            modalTitle.textContent = 'Edit Detail Foto';
+            document.getElementById('save-photo-button').textContent = 'Perbarui Detail';
+
+            document.getElementById('photo-title').value = photo.title;
+            document.getElementById('photo-date').value = photo.photo_date;
+            document.getElementById('photo-category').value = photo.category;
+            document.getElementById('image-url').value = photo.image_url;
+
+            modal.classList.add('open', 'opacity-100', 'pointer-events-auto');
+            document.querySelector('#photo-modal .modal-content-transition').classList.remove('translate-y-[-50px]');
+        }
+
+        window.closeModal = function () { // Dijadikan global
+            modal.classList.remove('open', 'opacity-100', 'pointer-events-auto');
+            document.querySelector('#photo-modal .modal-content-transition').classList.add('translate-y-[-50px]');
+            currentPhotoId = null;
+        }
+
+
+        // --- HANDLER SIMPAN/PERBARUI FOTO (CREATE/UPDATE) ---
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const photoData = Object.fromEntries(formData.entries());
+
+            // Hapus ID jika ada di FormData untuk operasi POST/PUT (ID sudah di URL untuk PUT)
+            delete photoData.id;
+
+            let url = API_BASE_URL;
+            let method = 'POST';
+            let successMessage = `Foto "${photoData.title}" berhasil diunggah!`;
+
+            if (currentPhotoId) {
+                url = `${API_BASE_URL}/${currentPhotoId}`;
+                method = 'PUT';
+                successMessage = `Detail foto "${photoData.title}" berhasil diperbarui!`;
+            }
+
+            // Validasi sederhana: pastikan URL tidak kosong
+            if (!photoData.image_url.trim()) {
+                openMessageModal('URL Gambar tidak boleh kosong.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(photoData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                    throw new Error(`Gagal menyimpan data: ${response.status} - ${errorData.message}`);
+                }
+
+                window.closeModal();
+                openMessageModal(successMessage, 'success');
+                await fetchGalleryData();
+            } catch (error) {
+                console.error("Kesalahan saat menyimpan data:", error);
+                openMessageModal(`Gagal menyimpan foto. Error: ${error.message}. Cek console log.`, 'error');
+            }
+        });
+
+
+        // --- HANDLER HAPUS FOTO (DELETE) ---
+
+        window.deletePhoto = async function (id) { // Dijadikan global
+            const photoToDelete = gallery.find(p => p.id === id);
+            if (!photoToDelete) return;
+
+            // Mengganti confirm() dengan modal kustom
+            const isConfirmed = await openMessageModal(`Yakin ingin menghapus foto "${photoToDelete.title}" (ID: ${id})? Aksi ini tidak dapat dibatalkan.`, 'confirm');
+
+            if (isConfirmed) {
+                try {
+                    const url = `${API_BASE_URL}/${id}`;
+                    const response = await fetch(url, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                        throw new Error(`Gagal menghapus data: ${response.status} - ${errorData.message}`);
+                    }
+
+                    openMessageModal('Foto berhasil dihapus dari galeri.', 'success');
+                    await fetchGalleryData();
+                } catch (error) {
+                    console.error("Kesalahan saat menghapus data:", error);
+                    openMessageModal(`Gagal menghapus foto. Error: ${error.message}. Cek console log.`, 'error');
+                }
+            }
+        }
+
+
+        // --- HANDLER PENCARIAN ---
+
+        document.getElementById('search-input').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredGallery = gallery.filter(p =>
+                p.title.toLowerCase().includes(searchTerm) ||
+                p.category.toLowerCase().includes(searchTerm)
+            );
+            renderGallery(filteredGallery);
+        });
+
+
+        // --- FUNGSI MOBILE & TEMA ---
+
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+
+        window.toggleSidebar = function () { // Dijadikan global
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function setupThemeToggle() {
+            const html = document.documentElement;
+            const toggleButton = document.getElementById('theme-toggle-sidebar');
+            const themeIcon = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text-sidebar');
+
+            const storedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // Tentukan tema awal
+            let isDarkMode = storedTheme === 'dark' || (storedTheme === null && prefersDark);
+
+            const applyTheme = (isDark) => {
+                if (isDark) {
+                    html.classList.add('dark');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Mode Gelap';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    html.classList.remove('dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Mode Terang';
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            applyTheme(isDarkMode);
+
+            toggleButton.addEventListener('click', () => {
+                applyTheme(!html.classList.contains('dark'));
+            });
+        }
+
+        // --- INITIALISASI HALAMAN ---
+
+        function checkAuthSession() {
+            const sessionData = localStorage.getItem('admin_session');
+            // Catatan: Tidak ada elemen 'welcome-username' di halaman ini, jadi display-nya dihapus.
+
+            if (!sessionData) {
+                // Redirect ke login jika sesi tidak ada
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const session = JSON.parse(sessionData);
+
+                // Cek isLoggedIn
+                if (session.isLoggedIn !== true) {
+                    localStorage.removeItem('admin_session');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+
+                // Sesi valid
+                return true;
+            } catch (e) {
+                console.error("Kesalahan parsing sesi:", e);
+                localStorage.removeItem('admin_session');
+                window.location.href = '/login.html';
+                return false;
+            }
+
+        }
+
+        function logout() {
+            // Hapus data sesi
+            localStorage.removeItem('admin_session');
+
+            // Redirect ke halaman login
+            window.location.href = '/login.html';
+        }
+
+        // 🔹 Event listener agar tombol bisa berfungsi
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // Jalankan pengecekan sesi saat halaman dibuka
+            checkAuthSession();
+        });
+
+        function initGalleryPage() {
+            // 1. Cek sesi sebelum memuat data
+            if (!checkAuthSession()) {
+                // Jika checkAuthSession me-redirect, kode di bawah ini tidak akan dijalankan.
+                return;
+            }
+
+            // 2. Setup elemen UI
+            setupThemeToggle();
+
+            // 3. Muat data
+            fetchGalleryData();
+        }
+
+        document.addEventListener('DOMContentLoaded', initGalleryPage);
+    </script>
+
+</body>
+
+</html>

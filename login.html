@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin | HMPS Informatika</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'accent': '#10b981', // Emerald 500
+                        'dark-bg': '#111827', // Gray 900
+                        'light-bg': '#f9fafb', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            transition: background-color 0.5s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Style untuk transisi tema yang lebih halus */
+        .card-transition {
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-light-bg dark:bg-dark-bg text-gray-800 dark:text-gray-100 p-4">
+
+    <div class="w-full max-w-md">
+
+        <div class="flex justify-end mb-4">
+            <button id="theme-toggle"
+                class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                <i class="fas fa-sun dark:hidden"></i>
+                <i class="fas fa-moon hidden dark:inline"></i>
+            </button>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-8 md:p-10 rounded-xl shadow-2xl card-transition">
+            
+            <div class="text-center mb-8">
+                <i class="fas fa-user-shield text-5xl text-primary mb-3"></i>
+                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+                    Panel Admin HMPS IF
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Silakan login untuk melanjutkan
+                </p>
+            </div>
+
+            <form id="login-form" method="POST" action="#">
+                <div class="mb-4">
+                    <label for="username"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username / Email</label>
+                    <input type="text" id="username" name="username" required
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white transition">
+                </div>
+
+                <div class="mb-6">
+                    <label for="password"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <input type="password" id="password" name="password" required
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white transition">
+                </div>
+                
+                <div id="login-status" class="hidden p-3 mb-6 rounded-lg text-sm font-medium bg-red-100 text-red-700 border border-red-400"></div>
+
+                <button type="submit" id="login-btn"
+                    class="w-full px-6 py-3 bg-primary text-white font-bold rounded-lg shadow-xl hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50 transition transform hover:scale-[1.01]">
+                    Login <i class="fas fa-sign-in-alt ml-2"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-sm text-primary hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition">
+                    Kembali ke Halaman Utama
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // URL API backend Anda
+            const API_URL = 'http://localhost:3000/login';
+
+            // Fungsi untuk menampilkan status (sukses/gagal)
+            const showStatus = (message, isError = true) => {
+                const $status = $('#login-status');
+                $status.removeClass().addClass('p-3 mb-6 rounded-lg text-sm font-medium border').slideDown(300);
+                $status.text(message);
+
+                if (isError) {
+                    $status.addClass('bg-red-100 text-red-700 border-red-400 dark:bg-red-900 dark:text-red-300 dark:border-red-700');
+                } else {
+                    $status.addClass('bg-green-100 text-green-700 border-green-400 dark:bg-green-900 dark:text-green-300 dark:border-green-700');
+                }
+            };
+
+            // Fungsi untuk mengaktifkan/menonaktifkan tombol
+            const setButtonState = (isLoading) => {
+                const $loginBtn = $('#login-btn');
+                if (isLoading) {
+                    $loginBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...');
+                } else {
+                    $loginBtn.prop('disabled', false).html('Login <i class="fas fa-sign-in-alt ml-2"></i>');
+                }
+            };
+
+
+            // --- LOGIC FORM SUBMIT ASLI (Menggunakan fetch) ---
+            $('#login-form').on('submit', async function (e) {
+                e.preventDefault();
+
+                setButtonState(true);
+                $('#login-status').slideUp(100).text(''); // Sembunyikan pesan status sebelumnya
+
+                const username = $('#username').val();
+                const password = $('#password').val();
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        // --- 1. LOGIN SUKSES ---
+                        
+                        // Simpan sesi ke localStorage
+                        // Menyimpan object user dan status login
+                        localStorage.setItem('admin_session', JSON.stringify({
+                            isLoggedIn: true,
+                            userId: data.user.id,
+                            username: data.user.username,
+                            loginTime: new Date().toISOString()
+                        }));
+                        
+                        showStatus(`Login berhasil! Mengarahkan ke ${data.redirect}...`, false);
+
+                        // Arahkan ke halaman dashboard
+                        setTimeout(() => {
+                            window.location.href = data.redirect || 'dashboard.html';
+                        }, 1000);
+
+                    } else {
+                        // --- 2. LOGIN GAGAL (Status 401 atau sukses: false) ---
+                        showStatus(data.message || 'Terjadi kesalahan yang tidak diketahui saat login.');
+                    }
+
+                } catch (error) {
+                    // --- 3. ERROR KONEKSI/SERVER ---
+                    console.error('Error saat menghubungi API:', error);
+                    showStatus('Gagal terhubung ke server. Pastikan API Node.js berjalan di port 3000.');
+                } finally {
+                    setButtonState(false);
+                }
+            });
+
+
+            // --- LOGIC TEMA GELAP/TERANG ---
+            const toggleTheme = () => {
+                if ($('html').hasClass('dark')) {
+                    $('html').removeClass('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    $('html').addClass('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            };
+
+            const initializeTheme = () => {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    $('html').addClass('dark');
+                } else {
+                    $('html').removeClass('dark');
+                }
+            };
+
+            initializeTheme();
+            $('#theme-toggle').on('click', toggleTheme);
+        });
+    </script>
+</body>
+
+</html>
