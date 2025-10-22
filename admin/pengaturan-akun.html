@@ -64,26 +64,26 @@
         </div>
         <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
             <div>
-            <a href="/admin/dashboard.html"
-                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                <i class="fas fa-home mr-3 w-5"></i> Dashboard
-            </a>
-            <a href="/admin/manajemen-kegiatan.html"
-                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
-            </a>
-            <a href="/admin/kelola-galery.html"
-                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
-            </a>
-            <a href="/admin/pengaturan-akun.html"
-                class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
-                <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan
-            </a>
-            <a href="/admin/manajemen-anggota.html"
-                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
-            </a>
+                <a href="/admin/dashboard.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-home mr-3 w-5"></i> Dashboard
+                </a>
+                <a href="/admin/manajemen-kegiatan.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+                </a>
+                <a href="/admin/kelola-galery.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+                </a>
+                <a href="/admin/pengaturan-akun.html"
+                    class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
+                    <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan
+                </a>
+                <a href="/admin/manajemen-anggota.html"
+                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                    <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+                </a>
             </div>
             <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <!-- TOMBOL MODE TERANG/GELAP -->
@@ -97,7 +97,7 @@
                     class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
                     <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
                 </button>
-                
+
             </div>
         </nav>
     </aside>
@@ -125,7 +125,8 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                 <h3
                     class="text-2xl font-semibold mb-4 text-primary dark:text-indigo-400 border-b pb-2 border-gray-100 dark:border-gray-700">
-                    <i class="fas fa-bullseye mr-2"></i> Visi dan Misi Organisasi</h3>
+                    <i class="fas fa-bullseye mr-2"></i> Visi dan Misi Organisasi
+                </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Perubahan akan disimpan secara **otomatis**
                     saat Anda berhenti mengetik.</p>
 
@@ -140,7 +141,7 @@
                     <div>
                         <label for="misi" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Misi
                             (Pisahkan dengan baris baru)</label>
-                        <textarea id="misi" name="misi" rows="5" required
+                        <textarea id="missions-container" name="misi" rows="5" required
                             class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100"></textarea>
                     </div>
 
@@ -150,7 +151,8 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                 <h3
                     class="text-2xl font-semibold mb-4 text-accent dark:text-emerald-400 border-b pb-2 border-gray-100 dark:border-gray-700">
-                    <i class="fas fa-history mr-2"></i> Budaya dan Sejarah Organisasi</h3>
+                    <i class="fas fa-history mr-2"></i> Budaya dan Sejarah Organisasi
+                </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Perubahan akan disimpan secara **otomatis**
                     saat Anda berhenti mengetik.</p>
 
@@ -228,6 +230,9 @@
         // --- FUNGSI UTILITY FETCH ---
 
         /** Mengambil data dari endpoint spesifik */
+        // --- FUNGSI UTILITY FETCH (Diperbaiki) ---
+
+        /** Mengambil data dari endpoint spesifik */
         async function fetchEndpoint(endpoint) {
             try {
                 const response = await fetch(`${BASE_URL}/${endpoint}`);
@@ -236,9 +241,11 @@
                     return null;
                 }
                 const data = await response.json();
-                // Mengatasi masalah array/single object
-                const result = Array.isArray(data) ? data[0] : data;
-                return result || null;
+
+                // Hapus: const result = Array.isArray(data) ? data[0] : data;
+                // Ganti: Biarkan data dikembalikan apa adanya (bisa array atau objek tunggal)
+                return data || null;
+
             } catch (error) {
                 console.error(`Gagal mengambil data dari /${endpoint}:`, error);
                 return null;
@@ -319,30 +326,60 @@
         }
 
         // --- FUNGSI UTAMA INI UNTUK MENGAMBIL SEMUA DATA SAAT INIT ---
+        // ...
+        // Tambahkan variabel global baru untuk menyimpan daftar misi jika perlu diakses global
+        let missionsList = [];
+        // ...
+
+        // --- FUNGSI UTAMA INI UNTUK MENGAMBIL SEMUA DATA SAAT INIT (Diperbaiki) ---
         async function loadAllData() {
             // 1. Ambil Visi Misi
             const vimiData = await fetchEndpoint('visi-misi');
             if (vimiData) {
-                organizationData.visi = vimiData.visi || '';
-                organizationData.misi = vimiData.misi || '';
+                // Cek apakah ini array misi (untuk 5 ID) atau objek tunggal (untuk Visi)
+                if (Array.isArray(vimiData)) {
+                    // Jika ini adalah array dari misi
+                    missionsList = vimiData; // Simpan seluruh array misi
+                    // Asumsi VISI ada di properti 'visi' dari elemen pertama atau ada di endpoint lain
+                    // Jika API Anda memisahkan Visi dan Misi:
+                    // organizationData.visi = await fetchEndpoint('visi'); // Ambil Visi dari endpoint terpisah
+                    // Jika API mengembalikan Visi dan Misi dalam 1 objek:
+                    // organizationData.visi = vimiData.find(item => item.type === 'visi')?.text || ''; // Contoh jika ada properti 'type'
+
+                    // Karena Anda hanya menyebut Misi, kita asumsikan VISI akan diisi dari elemen HTML jika tidak ada di API, 
+                    // atau Anda punya endpoint terpisah untuk Visi
+                    organizationData.visi = organizationData.visi || '';
+                    // organizationData.misi (sebelumnya menyimpan 1 ID) sekarang tidak dipakai untuk misi, 
+                    // missionsList yang menyimpan semua 5 ID.
+                } else {
+                    // Jika data yang kembali adalah objek Visi-Misi tunggal
+                    organizationData.visi = vimiData.visi || '';
+                    // JIKA MISI HANYA TEXT TUNGGAL, gunakan ini:
+                    organizationData.misi = vimiData.misi || '';
+                    // JIKA API SELALU MENGEMBALIKAN ARRAY UNTUK MISI, logic ini mungkin tidak terpakai/perlu disesuaikan
+                }
             }
 
-            // 2. Ambil Sejarah
+            // 2. Ambil Sejarah (Tetap sama)
             const sejarahData = await fetchEndpoint('sejarah');
             if (sejarahData) {
+                // ... (asumsi Sejarah mengembalikan objek tunggal)
                 organizationData.sejarah_deskripsi = sejarahData.deskripsi || '';
                 organizationData.sejarah_tahun = sejarahData.tahun_berdiri || '';
             }
 
-            // 3. Ambil Budaya
+            // 3. Ambil Budaya (Tetap sama)
             const budayaData = await fetchEndpoint('budaya');
             if (budayaData) {
+                // ... (asumsi Budaya mengembalikan objek tunggal)
                 organizationData.budaya_slogan = budayaData.slogan || '';
                 organizationData.budaya_struktur = budayaData.struktur || '';
             }
 
             console.log("Semua Data Organisasi berhasil dimuat:", organizationData);
             populateForms();
+            // Panggil fungsi baru untuk menampilkan daftar misi
+            displayMissions();
         }
 
         // --- FUNGSI POPULATE FORMS ---
@@ -462,6 +499,72 @@
             // Jalankan pengecekan sesi saat halaman dibuka
             checkAuthSession();
         });
+
+        // --- FUNGSI UNTUK MENAMPILKAN MISI KE HTML ---
+        function displayMissions() {
+            const container = document.getElementById('missions-container');
+
+            // Pastikan container ada dan missionsList berisi data
+            if (!container || missionsList.length === 0) {
+                console.warn("Container misi tidak ditemukan atau data misi kosong.");
+                return;
+            }
+
+            container.innerHTML = ''; // Kosongkan container sebelumnya
+
+            missionsList.forEach((misi, index) => {
+                // ASUMSI: Setiap item misi memiliki properti 'id' dan 'text' atau 'deskripsi'
+                const misiText = misi.text || misi.deskripsi || `Misi #${index + 1}`;
+
+                // Buat elemen baru untuk setiap misi (contoh menggunakan div/list item)
+                const misiItem = document.createElement('div');
+                misiItem.classList.add('p-3', 'border-b', 'dark:border-gray-700'); // Contoh styling Tailwind
+                misiItem.innerHTML = `
+            <p class="font-semibold text-gray-800 dark:text-gray-200">ID: ${misi.id}</p>
+            <textarea
+                id="misi-${misi.id}" 
+                class="w-full mt-2 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                data-mission-id="${misi.id}"
+                rows="3"
+            >${misiText}</textarea>
+        `;
+
+                container.appendChild(misiItem);
+
+                // Tambahkan event listener untuk autosave per misi
+                document.getElementById(`misi-${misi.id}`).addEventListener('input', (e) => {
+                    // Panggil fungsi save yang baru
+                    autoSave(() => saveMissionItem(misi.id, e.target.value));
+                });
+            });
+        }
+
+        // --- FUNGSI UNTUK MENYIMPAN 1 ITEM MISI SECARA SPESIFIK ---
+        async function saveMissionItem(misiId, misiText) {
+            showStatus('saving');
+            // ASUMSI: Endpoint untuk update misi tunggal adalah /misi/[id] dan menggunakan method PUT
+            const dataToSave = { text: misiText }; // Sesuaikan dengan struktur API Anda
+            const result = await saveEndpoint(`misi/${misiId}`, dataToSave);
+
+            if (result.success) {
+                showStatus('saved');
+            } else {
+                showStatus('error');
+            }
+        }
+
+        // --- PERUBAHAN PADA setupAutoSaveListeners ---
+        // Anda **HARUS HAPUS** listener untuk `document.getElementById('misi')` karena sudah diganti per item misi.
+
+        /*
+        // Hapus ini:
+        document.getElementById('misi').addEventListener('input', () => autoSave(saveVisiMisi));
+        */
+
+        // Anda bisa membuat listener untuk Visi tetap:
+        // document.getElementById('visi').addEventListener('input', () => autoSave(saveVisiMisi));
+
+        // *Semua listener untuk Misi akan didaftarkan di dalam fungsi `displayMissions()` yang baru.*
 
         // --- INITIALISASI HALAMAN ---
 
