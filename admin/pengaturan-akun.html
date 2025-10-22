@@ -64,26 +64,26 @@
         </div>
         <nav class="p-4 space-y-2 flex flex-col justify-between h-[calc(100vh-6rem)]">
             <div>
-                <a href="/admin/dashboard.html"
-                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                    <i class="fas fa-home mr-3 w-5"></i> Dashboard
-                </a>
-                <a href="/admin/manajemen-kegiatan.html"
-                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                    <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
-                </a>
-                <a href="/admin/kelola-galery.html"
-                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                    <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
-                </a>
-                <a href="/admin/pengaturan-akun.html"
-                    class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
-                    <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan
-                </a>
-                <a href="/admin/manajemen-anggota.html"
-                    class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                    <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
-                </a>
+            <a href="/admin/dashboard.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-home mr-3 w-5"></i> Dashboard
+            </a>
+            <a href="/admin/manajemen-kegiatan.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-calendar-alt mr-3 w-5"></i> Manajemen Kegiatan
+            </a>
+            <a href="/admin/kelola-galery.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-images mr-3 w-5"></i> Kelola Galeri
+            </a>
+            <a href="/admin/pengaturan-akun.html"
+                class="flex items-center p-3 rounded-xl bg-indigo-600 text-white shadow-md transition duration-150 hover:bg-indigo-700">
+                <i class="fas fa-users-cog mr-3 w-5"></i> Pengaturan
+            </a>
+            <a href="/admin/manajemen-anggota.html"
+                class="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+                <i class="fas fa-users mr-3 w-5"></i> Manajemen Anggota
+            </a>
             </div>
             <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <!-- TOMBOL MODE TERANG/GELAP -->
@@ -97,7 +97,7 @@
                     class="flex items-center p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 w-full text-left font-medium">
                     <i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout
                 </button>
-
+                
             </div>
         </nav>
     </aside>
@@ -125,8 +125,7 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                 <h3
                     class="text-2xl font-semibold mb-4 text-primary dark:text-indigo-400 border-b pb-2 border-gray-100 dark:border-gray-700">
-                    <i class="fas fa-bullseye mr-2"></i> Visi dan Misi Organisasi
-                </h3>
+                    <i class="fas fa-bullseye mr-2"></i> Visi dan Misi Organisasi</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Perubahan akan disimpan secara **otomatis**
                     saat Anda berhenti mengetik.</p>
 
@@ -139,12 +138,10 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Daftar Misi
-                            </label>
-                        <div id="misi-list-container" class="space-y-4">
-                            <p id="misi-loading-status" class="text-sm text-gray-500 dark:text-gray-400">Memuat data
-                                misi...</p>
-                        </div>
+                        <label for="misi" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Misi
+                            (Pisahkan dengan baris baru)</label>
+                        <textarea id="misi" name="misi" rows="5" required
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100"></textarea>
                     </div>
 
                 </form>
@@ -153,8 +150,7 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                 <h3
                     class="text-2xl font-semibold mb-4 text-accent dark:text-emerald-400 border-b pb-2 border-gray-100 dark:border-gray-700">
-                    <i class="fas fa-history mr-2"></i> Budaya dan Sejarah Organisasi
-                </h3>
+                    <i class="fas fa-history mr-2"></i> Budaya dan Sejarah Organisasi</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Perubahan akan disimpan secara **otomatis**
                     saat Anda berhenti mengetik.</p>
 
@@ -195,8 +191,7 @@
         const DEBOUNCE_TIME = 1500; // 1.5 detik jeda mengetik untuk autosave
 
         let saveTimeout;
-        let organizationData = {}; // Digunakan untuk menampung data Visi, Budaya, Sejarah
-        let missionsList = []; // <-- VARIABEL BARU: Digunakan untuk menampung semua 5 ID Misi
+        let organizationData = {}; // Digunakan hanya untuk menampung data awal dan status.
 
         // --- STATUS MESSAGE UTILITIES ---
         const statusEl = document.getElementById('status-message');
@@ -207,7 +202,6 @@
         function showStatus(type, message) {
             statusIconSaving.classList.add('hidden');
             statusIconSaved.classList.add('hidden');
-            statusText.classList.remove('text-red-500');
 
             if (type === 'saving') {
                 statusIconSaving.classList.remove('hidden');
@@ -218,6 +212,7 @@
             } else if (type === 'error') {
                 statusText.textContent = 'Gagal menyimpan!';
                 statusText.classList.add('text-red-500');
+                statusIconSaved.classList.add('hidden'); // Sembunyikan jika ada
             } else {
                 statusText.textContent = '';
             }
@@ -230,9 +225,9 @@
             }
         }
 
-        // --- FUNGSI UTILITY FETCH (DIPERBAIKI) ---
+        // --- FUNGSI UTILITY FETCH ---
 
-        /** Mengambil data dari endpoint spesifik (mengembalikan objek atau array penuh) */
+        /** Mengambil data dari endpoint spesifik */
         async function fetchEndpoint(endpoint) {
             try {
                 const response = await fetch(`${BASE_URL}/${endpoint}`);
@@ -241,8 +236,9 @@
                     return null;
                 }
                 const data = await response.json();
-                // Mengembalikan data apa adanya, baik itu objek tunggal atau array
-                return data || null;
+                // Mengatasi masalah array/single object
+                const result = Array.isArray(data) ? data[0] : data;
+                return result || null;
             } catch (error) {
                 console.error(`Gagal mengambil data dari /${endpoint}:`, error);
                 return null;
@@ -273,15 +269,13 @@
 
         // --- FUNGSI AUTO SAVE DENGAN DEBOUNCE ---
 
-        /** Handler untuk menyimpan VISI saja */
-        async function saveVisi() {
+        /** Handler untuk menyimpan Visi dan Misi secara otomatis */
+        async function saveVisiMisi() {
             showStatus('saving');
             const dataToSave = {
                 visi: document.getElementById('visi').value,
-                // Catatan: Jika endpoint backend Anda membutuhkan properti 'misi' meskipun kosong, 
-                // Anda harus mengirimkannya. Jika tidak, ini sudah cukup.
+                misi: document.getElementById('misi').value
             };
-            // ASUMSI: Endpoint ini hanya mengurus Visi, atau backend bisa memproses properti parsial.
             const result = await saveEndpoint('visi-misi', dataToSave);
             if (result.success) {
                 showStatus('saved');
@@ -312,71 +306,25 @@
             }
         }
 
-        /** Handler untuk menyimpan satu item Misi berdasarkan ID */
-        async function saveSingleMission(misiId, value) {
-            showStatus('saving');
-            const dataToSave = {
-                misi: value // ASUMSI: Key body API untuk update misi adalah 'misi'
-            };
-
-            // ASUMSI: Endpoint untuk update misi tunggal adalah /visi-misi/[id]
-            const result = await saveEndpoint(`visi-misi/${misiId}`, dataToSave);
-
-            if (result.success) {
-                // Update missionsList lokal untuk menjaga sinkronisasi
-                const index = missionsList.findIndex(m => m.id == misiId);
-                if (index !== -1) {
-                    missionsList[index].text = value;
-                }
-                showStatus('saved');
-            } else {
-                showStatus('error');
-            }
-        }
-
         /** Fungsi debounce untuk memicu penyimpanan */
         function autoSave(saveFunction) {
             clearTimeout(saveTimeout);
+            // Tampilkan pesan "Draft" segera setelah mengetik (opsional)
+            // statusText.textContent = 'Draft...'; 
+            // statusEl.classList.remove('opacity-0');
+
             saveTimeout = setTimeout(() => {
                 saveFunction();
             }, DEBOUNCE_TIME);
         }
 
-        // --- FUNGSI UTAMA INI UNTUK MENGAMBIL SEMUA DATA SAAT INIT (DIPERBAIKI) ---
+        // --- FUNGSI UTAMA INI UNTUK MENGAMBIL SEMUA DATA SAAT INIT ---
         async function loadAllData() {
             // 1. Ambil Visi Misi
             const vimiData = await fetchEndpoint('visi-misi');
-
             if (vimiData) {
-                if (Array.isArray(vimiData)) {
-                    // Skema A: API mengembalikan array yang seluruhnya adalah daftar misi
-                    // Batasi hanya mengambil 5 ID misi pertama
-                    missionsList = vimiData.slice(0, 5).map(item => ({
-                        id: item.id || Math.random().toString(36).substring(2, 9), // Fallback ID
-                        text: item.misi || item.text || '' // Asumsi properti misi adalah 'misi' atau 'text'
-                    }));
-                    // Visi mungkin perlu diambil dari endpoint lain atau properti lain
-                    organizationData.visi = '';
-
-                } else if (vimiData.visi && vimiData.misi) {
-                    // Skema B: API mengembalikan objek tunggal {visi: "...", misi: [{...}, {...}]}
-                    organizationData.visi = vimiData.visi || '';
-
-                    if (Array.isArray(vimiData.misi)) {
-                        // Misi adalah array di dalam objek
-                        missionsList = vimiData.misi.slice(0, 5).map(item => ({
-                            id: item.id || Math.random().toString(36).substring(2, 9),
-                            text: item.misi || item.text || ''
-                        }));
-                    } else {
-                        // Misi adalah string tunggal (solusi darurat, asumsikan dipisah per baris)
-                        const misiLines = String(vimiData.misi).split('\n').filter(line => line.trim() !== '');
-                        missionsList = misiLines.slice(0, 5).map((text, index) => ({
-                            id: (index + 1), // ID DUMMY jika API hanya memberikan teks
-                            text: text
-                        }));
-                    }
-                }
+                organizationData.visi = vimiData.visi || '';
+                organizationData.misi = vimiData.misi || '';
             }
 
             // 2. Ambil Sejarah
@@ -395,52 +343,13 @@
 
             console.log("Semua Data Organisasi berhasil dimuat:", organizationData);
             populateForms();
-            renderMissionInputs(); // Panggil fungsi render misi
         }
 
-        // --- FUNGSI BARU: RENDER 5 INPUT MISI ---
-        function renderMissionInputs() {
-            const container = document.getElementById('misi-list-container');
-            if (!container) return;
-
-            container.innerHTML = ''; // Kosongkan pesan loading/konten sebelumnya
-
-            if (missionsList.length === 0) {
-                container.innerHTML = '<p class="text-sm text-red-500">Gagal memuat daftar misi atau daftar kosong.</p>';
-                return;
-            }
-
-            missionsList.forEach((misi, index) => {
-                const misiItem = document.createElement('div');
-                misiItem.classList.add('space-y-1', 'py-1'); // Tambahkan sedikit padding
-
-                misiItem.innerHTML = `
-                <label for="misi-id-${misi.id}" class="block text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Misi #${index + 1} (ID: ${misi.id})
-                </label>
-                <textarea 
-                    id="misi-id-${misi.id}" 
-                    data-mission-id="${misi.id}" 
-                    rows="2" 
-                    class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-gray-100"
-                >${misi.text || ''}</textarea>
-            `;
-                container.appendChild(misiItem);
-
-                // Daftarkan event listener untuk AutoSave setiap textarea Misi
-                const textarea = document.getElementById(`misi-id-${misi.id}`);
-                textarea.addEventListener('input', (e) => {
-                    // Panggil saveSingleMission dengan ID misi dan value textarea
-                    autoSave(() => saveSingleMission(misi.id, e.target.value));
-                });
-            });
-        }
-
-        // --- FUNGSI POPULATE FORMS (Disesuaikan) ---
+        // --- FUNGSI POPULATE FORMS ---
         function populateForms() {
-            // Isi form Visi
+            // Isi form Visi Misi
             document.getElementById('visi').value = organizationData.visi || '';
-            // Misi akan diisi oleh fungsi renderMissionInputs()
+            document.getElementById('misi').value = organizationData.misi || '';
 
             // Isi form Budaya & Sejarah 
             document.getElementById('budaya_slogan').value = organizationData.budaya_slogan || organizationData.budaya_struktur || '';
@@ -448,12 +357,11 @@
             document.getElementById('sejarah_tahun').value = organizationData.sejarah_tahun || '';
         }
 
-        // --- SETUP EVENT LISTENERS UNTUK AUTOSAVE (Disesuaikan) ---
+        // --- SETUP EVENT LISTENERS UNTUK AUTOSAVE ---
         function setupAutoSaveListeners() {
-            // Hanya Visi yang didaftarkan di sini
-            document.getElementById('visi').addEventListener('input', () => autoSave(saveVisi));
-
-            // Listener Misi dihapus dari sini karena didaftarkan di renderMissionInputs()
+            // Visi Misi
+            document.getElementById('visi').addEventListener('input', () => autoSave(saveVisiMisi));
+            document.getElementById('misi').addEventListener('input', () => autoSave(saveVisiMisi));
 
             // Budaya & Sejarah
             document.getElementById('budaya_slogan').addEventListener('input', () => autoSave(saveCultureHistory));
@@ -508,8 +416,10 @@
         }
         function checkAuthSession() {
             const sessionData = localStorage.getItem('admin_session');
+            // Catatan: Tidak ada elemen 'welcome-username' di halaman ini, jadi display-nya dihapus.
 
             if (!sessionData) {
+                // Redirect ke login jika sesi tidak ada
                 window.location.href = '/login.html';
                 return false;
             }
@@ -517,12 +427,14 @@
             try {
                 const session = JSON.parse(sessionData);
 
+                // Cek isLoggedIn
                 if (session.isLoggedIn !== true) {
                     localStorage.removeItem('admin_session');
                     window.location.href = '/login.html';
                     return false;
                 }
 
+                // Sesi valid
                 return true;
             } catch (e) {
                 console.error("Kesalahan parsing sesi:", e);
@@ -533,7 +445,10 @@
         }
 
         function logout() {
+            // Hapus data sesi
             localStorage.removeItem('admin_session');
+
+            // Redirect ke halaman login
             window.location.href = '/login.html';
         }
 
@@ -553,8 +468,8 @@
         function initSettingsPage() {
             setupThemeToggle();
             loadAllData();
-            setupAutoSaveListeners(); // Daftarkan listener autosave Visi, Budaya, Sejarah
-            checkAuthSession();
+            setupAutoSaveListeners(); // Daftarkan listener autosave
+            checkAuthSession(); // Cek sesi autentikasi
         }
 
         // Jalankan inisialisasi setelah halaman dimuat
